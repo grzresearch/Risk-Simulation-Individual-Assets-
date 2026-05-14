@@ -1,0 +1,28 @@
+{
+  "api_keys": {
+    "fred": "REPLACE_WITH_FRED_KEY",
+    "alphavantage": ""
+  },
+  "horizon_days": 90,
+  "history_years": 12,
+  "mc_paths": 20000,
+  "offline": false,
+  "cache_dir": ".cache",
+  "return_horizons": [1, 5, 20],
+  "events": ["CPI", "FOMC", "NFP", "PPI", "PCE", "UNEMPLOYMENT", "RETAIL_SALES"],
+  "assets": [
+    {"id": "aapl", "name": "Apple Inc.",       "class": "equity",    "yahoo": "AAPL"},
+    {"id": "msft", "name": "Microsoft",        "class": "equity",    "yahoo": "MSFT"},
+    {"id": "spy",  "name": "S&P 500 ETF",      "class": "etf",       "yahoo": "SPY"},
+    {"id": "qqq",  "name": "Nasdaq 100 ETF",   "class": "etf",       "yahoo": "QQQ"},
+    {"id": "tlt",  "name": "20Y Treasury ETF", "class": "bond",      "yahoo": "TLT"},
+    {"id": "ief",  "name": "7-10Y Treasury",   "class": "bond",      "yahoo": "IEF"},
+    {"id": "btc",  "name": "Bitcoin",          "class": "crypto",    "coingecko": "bitcoin",  "yahoo": "BTC-USD"},
+    {"id": "eth",  "name": "Ethereum",         "class": "crypto",    "coingecko": "ethereum", "yahoo": "ETH-USD"},
+    {"id": "sol",  "name": "Solana",           "class": "crypto",    "coingecko": "solana",   "yahoo": "SOL-USD"},
+    {"id": "gld",  "name": "Gold ETF",         "class": "commodity", "yahoo": "GLD"},
+    {"id": "slv",  "name": "Silver ETF",       "class": "commodity", "yahoo": "SLV"},
+    {"id": "uso",  "name": "Oil ETF",          "class": "commodity", "yahoo": "USO"},
+    {"id": "dxy",  "name": "US Dollar Index",  "class": "fx",        "yahoo": "DX-Y.NYB"}
+  ]
+}
