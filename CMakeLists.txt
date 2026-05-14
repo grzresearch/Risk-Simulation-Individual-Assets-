@@ -37,6 +37,7 @@ find_package(Threads REQUIRED)
 set(ENGINE_SOURCES
     src/util/http_client.cpp
     src/util/time_utils.cpp
+    src/util/holiday_calendar.cpp
     src/util/logger.cpp
     src/models.cpp
     src/config.cpp
@@ -45,11 +46,21 @@ set(ENGINE_SOURCES
     src/data/coingecko_client.cpp
     src/data/econ_calendar.cpp
     src/data/price_repository.cpp
+    src/data/consensus_provider.cpp
     src/engine/historical_analyzer.cpp
     src/engine/statistical_engine.cpp
     src/engine/monte_carlo.cpp
     src/engine/risk_calculator.cpp
     src/engine/scanner.cpp
+    src/engine/garch.cpp
+    src/engine/regime.cpp
+    src/engine/multitest.cpp
+    src/engine/calibration.cpp
+    src/engine/surprise.cpp
+    src/engine/linalg.cpp
+    src/engine/portfolio_risk.cpp
+    src/engine/stress.cpp
+    src/engine/backtest.cpp
     src/report/reporter.cpp)
 
 add_library(macro_engine STATIC ${ENGINE_SOURCES})
@@ -69,6 +80,10 @@ if(BUILD_TESTS)
     add_executable(test_statistics tests/test_statistics.cpp)
     target_link_libraries(test_statistics PRIVATE macro_engine)
     add_test(NAME statistics COMMAND test_statistics)
+
+    add_executable(test_advanced tests/test_advanced.cpp)
+    target_link_libraries(test_advanced PRIVATE macro_engine)
+    add_test(NAME advanced COMMAND test_advanced)
 endif()
 
 install(TARGETS macro_risk RUNTIME DESTINATION bin)

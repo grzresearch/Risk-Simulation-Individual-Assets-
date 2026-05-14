@@ -2,6 +2,7 @@
 
 #include "util/time_utils.h"
 
+#include <map>
 #include <optional>
 #include <string>
 #include <vector>
@@ -113,6 +114,32 @@ struct DirectionalForecast {
     double es95  = 0.0;              // 95% expected shortfall
     int    sample_size = 0;
     double sign_test_p = 1.0;        // two-sided p-value of sign test
+
+    // EWMA-weighted variants (recent events count more)
+    double weighted_prob_up = 0.5;
+    double weighted_mean    = 0.0;
+    double weighted_median  = 0.0;
+    double ewma_half_life_samples = 24.0;
+
+    // Regime-conditional forecast (NaN-friendly fields)
+    int    regime_sample_size = 0;
+    double regime_prob_up   = 0.5;
+    double regime_mean      = 0.0;
+
+    // Multiple-testing corrected p-values (filled by report layer)
+    double bonferroni_p = 1.0;
+    double bh_q         = 1.0;
+};
+
+struct BacktestSummary {
+    int    n_events = 0;
+    double brier = 0.0;
+    double log_loss = 0.0;
+    double hit_rate = 0.0;
+    double pnl_total = 0.0;
+    double pnl_sharpe = 0.0;
+    double pnl_sortino = 0.0;
+    double max_drawdown = 0.0;
 };
 
 struct ScenarioResult {
@@ -121,17 +148,51 @@ struct ScenarioResult {
     DirectionalForecast forecast;
     // Sensitivity slope: regression beta of return on surprise.
     std::optional<double> surprise_beta;
+    // Standardised next-event surprise expectation (uses last consensus vs previous).
+    std::optional<double> expected_surprise_z;
+    // Detected regime at the upcoming event date.
+    std::string regime = "Unknown";
+    // GARCH-implied 1-day sigma (log-return scale).
+    double garch_sigma_1d = 0.0;
     // Monte-Carlo projected price band.
     double mc_price_p05 = 0.0;
     double mc_price_p50 = 0.0;
     double mc_price_p95 = 0.0;
 };
 
+struct StressEntry {
+    std::string scenario;
+    double      total_log_return = 0.0;
+    double      max_drawdown = 0.0;
+    int         duration_days = 0;
+};
+
 struct AssetReport {
     Asset asset;
     double                spot_price = 0.0;
     double                hist_vol_annualized = 0.0;
+    double                garch_vol_annualized = 0.0;
     std::vector<ScenarioResult> scenarios;
+    std::map<std::string /*event*/, BacktestSummary> backtests;
+    std::vector<StressEntry>    stresses;
+};
+
+struct PortfolioSnapshot {
+    bool   present = false;
+    int    n_assets = 0;
+    int    horizon_days = 1;
+    double mean_return = 0.0;
+    double stddev = 0.0;
+    double var95 = 0.0;
+    double var99 = 0.0;
+    double es95 = 0.0;
+    double es99 = 0.0;
+    std::vector<std::string> asset_ids;
+    std::vector<double>      weights;
+    std::vector<double>      component_var95;
+    std::vector<double>      marginal_var95;
+    std::vector<std::string> correl_labels;
+    std::vector<std::vector<double>> correlation;
 };
 
 } // namespace macro
