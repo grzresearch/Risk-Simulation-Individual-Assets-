@@ -1,0 +1,14 @@
+build/
+.cache/
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+my_config.json
+report.json
+.vscode/
+.idea/
