@@ -3,22 +3,34 @@
 #include <cmath>
 #include <random>
 
+#ifdef _OPENMP
+#  include <omp.h>
+#endif
+
 namespace macro::engine {
 
 std::vector<double>
 gbm_terminal_prices(double spot, double mu, double sigma,
                     int horizon_days, int paths, unsigned seed) {
-    std::vector<double> out;
-    out.reserve(static_cast<size_t>(paths));
-    std::mt19937 rng(seed);
-    std::normal_distribution<double> n(0.0, 1.0);
-    for (int i = 0; i < paths; ++i) {
-        double s = spot;
-        for (int t = 0; t < horizon_days; ++t) {
-            double z = n(rng);
-            s *= std::exp((mu - 0.5 * sigma * sigma) + sigma * z);
+    std::vector<double> out(static_cast<std::size_t>(std::max(0, paths)));
+#pragma omp parallel
+    {
+#ifdef _OPENMP
+        unsigned tseed = seed ^ static_cast<unsigned>(omp_get_thread_num() * 2654435761u);
+#else
+        unsigned tseed = seed;
+#endif
+        std::mt19937 rng(tseed);
+        std::normal_distribution<double> n(0.0, 1.0);
+#pragma omp for schedule(static)
+        for (int i = 0; i < paths; ++i) {
+            double s = spot;
+            for (int t = 0; t < horizon_days; ++t) {
+                double z = n(rng);
+                s *= std::exp((mu - 0.5 * sigma * sigma) + sigma * z);
+            }
+            out[static_cast<std::size_t>(i)] = s;
         }
-        out.push_back(s);
     }
     return out;
 }
@@ -31,41 +43,41 @@ mixture_terminal_prices(double spot,
                         int paths,
                         double weight_event,
                         unsigned seed) {
-    std::vector<double> out;
-    if (paths <= 0 || horizon_days <= 0) return out;
-    std::mt19937 rng(seed);
-    std::uniform_real_distribution<double> u(0.0, 1.0);
-    out.reserve(static_cast<size_t>(paths));
+    if (paths <= 0 || horizon_days <= 0) return {};
+    std::vector<double> out(static_cast<std::size_t>(paths));
+    const std::size_t ne = event_returns.size();
+    const std::size_t nb = baseline_daily_returns.size();
 
-    std::uniform_int_distribution<size_t> di_event(
-        0, event_returns.empty() ? 0 : event_returns.size() - 1);
-    std::uniform_int_distribution<size_t> di_base(
-        0, baseline_daily_returns.empty() ? 0 : baseline_daily_returns.size() - 1);
-
-    for (int i = 0; i < paths; ++i) {
-        double s = spot;
-        // Day 1 -> event window shock (drawn once)
-        if (!event_returns.empty() && u(rng) < weight_event) {
-            s *= std::exp(event_returns[di_event(rng)]);
-        } else if (!baseline_daily_returns.empty()) {
-            // Sum baseline daily log returns over `horizon_days`
-            double acc = 0;
-            for (int t = 0; t < horizon_days; ++t) {
-                acc += baseline_daily_returns[di_base(rng)];
+#pragma omp parallel
+    {
+#ifdef _OPENMP
+        unsigned tseed = seed ^ static_cast<unsigned>(omp_get_thread_num() * 2654435761u);
+#else
+        unsigned tseed = seed;
+#endif
+        std::mt19937 rng(tseed);
+        std::uniform_real_distribution<double> u(0.0, 1.0);
+#pragma omp for schedule(static)
+        for (int i = 0; i < paths; ++i) {
+            double s = spot;
+            bool used_event = false;
+            if (ne > 0 && u(rng) < weight_event) {
+                std::uniform_int_distribution<std::size_t> de(0, ne - 1);
+                s *= std::exp(event_returns[de(rng)]);
+                used_event = true;
             }
-            s *= std::exp(acc);
-            out.push_back(s);
-            continue;
-        }
-        // After the event shock, drift with baseline returns for remaining days
-        if (!baseline_daily_returns.empty()) {
-            for (int t = 1; t < horizon_days; ++t) {
-                s *= std::exp(baseline_daily_returns[di_base(rng)]);
+            if (nb > 0) {
+                std::uniform_int_distribution<std::size_t> db(0, nb - 1);
+                int t0 = used_event ? 1 : 0;
+                for (int t = t0; t < horizon_days; ++t) {
+                    s *= std::exp(baseline_daily_returns[db(rng)]);
+                }
             }
+            out[static_cast<std::size_t>(i)] = s;
         }
-        out.push_back(s);
     }
     return out;
 }
 
 } // namespace macro::engine
+

@@ -44,6 +44,36 @@ Config load_config(const std::string& path) {
         }
     }
 
+    if (j.contains("server")) {
+        const auto& s = j["server"];
+        cfg.server.enabled   = s.value("enabled", false);
+        cfg.server.host      = s.value("host", std::string("0.0.0.0"));
+        cfg.server.port      = s.value("port", 8080);
+        cfg.server.api_token = s.value("api_token", std::string(""));
+    }
+    if (j.contains("alerts")) {
+        const auto& a = j["alerts"];
+        cfg.alerts.enabled         = a.value("enabled", false);
+        cfg.alerts.slack_webhook   = a.value("slack_webhook", std::string(""));
+        cfg.alerts.prob_threshold  = a.value("prob_threshold", 0.20);
+        cfg.alerts.bh_q_threshold  = a.value("bh_q_threshold", 0.10);
+        cfg.alerts.min_sample_size = a.value("min_sample_size", 20);
+    }
+    if (j.contains("persistence")) {
+        const auto& p = j["persistence"];
+        cfg.persist.backend      = p.value("backend", std::string("json"));
+        cfg.persist.json_dir     = p.value("json_dir", std::string(".cache/runs"));
+        cfg.persist.postgres_dsn = p.value("postgres_dsn", std::string(""));
+    }
+    if (j.contains("audit")) {
+        const auto& a = j["audit"];
+        cfg.audit.enabled = a.value("enabled", true);
+        cfg.audit.path    = a.value("path", std::string(".cache/audit.log"));
+        cfg.audit.actor   = a.value("actor", std::string("system"));
+    }
+    cfg.structured_logging = j.value("structured_logging", false);
+    cfg.worker_threads     = j.value("worker_threads", 0);
+
     if (j.contains("return_horizons")) {
         cfg.return_horizons.clear();
         for (auto& v : j["return_horizons"]) cfg.return_horizons.push_back(v.get<int>());
@@ -113,7 +143,32 @@ void write_default_config(const std::string& path) {
             {{"id","tlt"}, {"weight", 0.3}},
             {{"id","gld"}, {"weight", 0.1}},
             {{"id","btc"}, {"weight", 0.1}}
-        })}
+        })},
+        {"structured_logging", false},
+        {"worker_threads", 0},
+        {"server", {
+            {"enabled", false},
+            {"host", "0.0.0.0"},
+            {"port", 8080},
+            {"api_token", ""}
+        }},
+        {"alerts", {
+            {"enabled", false},
+            {"slack_webhook", ""},
+            {"prob_threshold", 0.20},
+            {"bh_q_threshold", 0.10},
+            {"min_sample_size", 20}
+        }},
+        {"persistence", {
+            {"backend", "json"},
+            {"json_dir", ".cache/runs"},
+            {"postgres_dsn", ""}
+        }},
+        {"audit", {
+            {"enabled", true},
+            {"path", ".cache/audit.log"},
+            {"actor", "system"}
+        }}
     };
     std::ofstream f(path);
     f << j.dump(2);

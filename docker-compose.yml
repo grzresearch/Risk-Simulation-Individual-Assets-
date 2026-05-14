@@ -1,0 +1,45 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: macro
+      POSTGRES_PASSWORD: macro
+      POSTGRES_DB: macro_risk
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - ./schema/postgres.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U macro -d macro_risk"]
+      interval: 5s
+      retries: 10
+
+  macro_risk:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      FRED_API_KEY: ${FRED_API_KEY:-}
+      SLACK_WEBHOOK: ${SLACK_WEBHOOK:-}
+      POSTGRES_DSN: "host=postgres user=macro password=macro dbname=macro_risk"
+    volumes:
+      - ./config.example.json:/home/macro/config.json:ro
+      - macro-cache:/home/macro/.cache
+    ports:
+      - "8080:8080"
+    command: ["--config", "/home/macro/config.json", "--serve"]
+
+  prometheus:
+    image: prom/prometheus:latest
+    profiles: ["observability"]
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+
+volumes:
+  pg-data:
+  macro-cache:

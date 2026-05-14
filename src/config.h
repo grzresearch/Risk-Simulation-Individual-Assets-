@@ -17,6 +17,33 @@ struct PortfolioHoldingCfg {
     double      weight = 0.0;
 };
 
+struct ServerCfg {
+    bool        enabled = false;
+    std::string host = "0.0.0.0";
+    int         port = 8080;
+    std::string api_token; // bearer; if empty no auth
+};
+
+struct AlertCfg {
+    bool        enabled = false;
+    std::string slack_webhook;
+    double      prob_threshold = 0.20;
+    double      bh_q_threshold = 0.10;
+    int         min_sample_size = 20;
+};
+
+struct PersistCfg {
+    std::string backend = "json"; // "json" or "postgres"
+    std::string json_dir = ".cache/runs";
+    std::string postgres_dsn;     // "host=... dbname=..."
+};
+
+struct AuditCfg {
+    bool        enabled = true;
+    std::string path = ".cache/audit.log";
+    std::string actor = "system";
+};
+
 struct Config {
     ApiKeys            api_keys;
     std::vector<Asset> assets;
@@ -42,6 +69,14 @@ struct Config {
     // Phase 4 backtest
     bool               enable_backtest = true;
     int                backtest_min_train = 24;
+
+    // Phase 5-7 production
+    ServerCfg          server;
+    AlertCfg           alerts;
+    PersistCfg         persist;
+    AuditCfg           audit;
+    bool               structured_logging = false;
+    int                worker_threads = 0; // 0 = hardware concurrency
 };
 
 Config load_config(const std::string& path);

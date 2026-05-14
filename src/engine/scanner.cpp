@@ -13,12 +13,15 @@
 #include "engine/stress.h"
 #include "engine/surprise.h"
 #include "util/logger.h"
+#include "util/thread_pool.h"
 
 #include <algorithm>
 #include <cmath>
+#include <future>
 #include <functional>
 #include <map>
 #include <string>
+#include <thread>
 #include <unordered_map>
 
 namespace macro::engine {

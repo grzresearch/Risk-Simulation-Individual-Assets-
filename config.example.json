@@ -44,5 +44,31 @@
     {"id": "btc", "weight":  0.05},
     {"id": "eth", "weight":  0.05},
     {"id": "uso", "weight":  0.10}
-  ]
+  ],
+
+  "structured_logging": false,
+  "worker_threads": 0,
+  "server": {
+    "enabled": false,
+    "host": "0.0.0.0",
+    "port": 8080,
+    "api_token": ""
+  },
+  "alerts": {
+    "enabled": false,
+    "slack_webhook": "",
+    "prob_threshold": 0.20,
+    "bh_q_threshold": 0.10,
+    "min_sample_size": 20
+  },
+  "persistence": {
+    "backend": "json",
+    "json_dir": ".cache/runs",
+    "postgres_dsn": ""
+  },
+  "audit": {
+    "enabled": true,
+    "path": ".cache/audit.log",
+    "actor": "system"
+  }
 }
