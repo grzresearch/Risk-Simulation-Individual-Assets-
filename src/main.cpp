@@ -1,5 +1,6 @@
 #include "config.h"
 #include "data/coingecko_client.h"
+#include "data/consensus_provider.h"
 #include "data/econ_calendar.h"
 #include "data/fred_client.h"
 #include "data/price_repository.h"
@@ -80,19 +81,20 @@ int main(int argc, char** argv) {
                              "and historical releases will be empty.");
         }
 
-        macro::data::FredClient      fred(cfg.api_keys.fred);
-        macro::data::YahooClient     yahoo;
-        macro::data::CoinGeckoClient gecko;
-        macro::data::EconCalendar    cal(fred);
-        macro::data::PriceRepository repo(yahoo, gecko, cfg.cache_dir);
+        macro::data::FredClient        fred(cfg.api_keys.fred);
+        macro::data::YahooClient       yahoo;
+        macro::data::CoinGeckoClient   gecko;
+        macro::data::EconCalendar      cal(fred);
+        macro::data::PriceRepository   repo(yahoo, gecko, cfg.cache_dir);
+        macro::data::ConsensusProvider consensus(cfg.cache_dir);
 
-        macro::engine::Scanner scanner(cfg, fred, cal, repo);
-        auto reports = scanner.run();
+        macro::engine::Scanner scanner(cfg, fred, cal, repo, consensus);
+        auto result = scanner.run();
 
         if (emit_json) {
-            std::cout << macro::report::to_json(reports) << "\n";
+            std::cout << macro::report::to_json(result) << "\n";
         } else {
-            macro::report::print_text(std::cout, reports);
+            macro::report::print_text(std::cout, result);
         }
         return 0;
     } catch (const std::exception& e) {

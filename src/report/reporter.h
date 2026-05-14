@@ -1,5 +1,6 @@
 #pragma once
 
+#include "engine/scanner.h"
 #include "models.h"
 
 #include <iosfwd>
@@ -8,7 +9,7 @@
 
 namespace macro::report {
 
-void print_text(std::ostream& out, const std::vector<AssetReport>& reports);
-std::string to_json(const std::vector<AssetReport>& reports, bool pretty = true);
+void print_text(std::ostream& out, const engine::ScanOutput& result);
+std::string to_json(const engine::ScanOutput& result, bool pretty = true);
 
 } // namespace macro::report

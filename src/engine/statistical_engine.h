@@ -25,6 +25,15 @@ double phi(double z);
 // Two-sided sign test p-value: H0 = median of xs is 0.
 double sign_test_p(const std::vector<double>& xs);
 
+// Weighted variants: weights are unnormalised, internally normalised to sum=1.
+double weighted_mean(const std::vector<double>& xs, const std::vector<double>& w);
+double weighted_quantile(std::vector<double> xs, std::vector<double> w, double q);
+double weighted_prob_up(const std::vector<double>& xs, const std::vector<double>& w);
+
+// Exponential decay weights: w_i = exp(-lambda * (n - 1 - i)) where i indexes
+// chronological order (oldest first). half_life expressed in samples.
+std::vector<double> ewma_weights(std::size_t n, double half_life);
+
 // Bootstrap CI for the mean. Returns {low, high}.
 struct CI { double low; double high; };
 CI bootstrap_mean_ci(const std::vector<double>& xs, double alpha, int iters = 2000, unsigned seed = 42);

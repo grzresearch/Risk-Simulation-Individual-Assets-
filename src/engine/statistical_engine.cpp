@@ -39,6 +39,53 @@ double phi(double z) {
     return 0.5 * std::erfc(-z * M_SQRT1_2);
 }
 
+double weighted_mean(const std::vector<double>& xs, const std::vector<double>& w) {
+    if (xs.empty() || xs.size() != w.size()) return 0.0;
+    double sw = 0.0, sxw = 0.0;
+    for (std::size_t i = 0; i < xs.size(); ++i) { sw += w[i]; sxw += xs[i] * w[i]; }
+    return sw > 0.0 ? sxw / sw : 0.0;
+}
+
+double weighted_quantile(std::vector<double> xs, std::vector<double> w, double q) {
+    if (xs.empty() || xs.size() != w.size()) return 0.0;
+    q = std::clamp(q, 0.0, 1.0);
+    std::vector<std::size_t> idx(xs.size());
+    for (std::size_t i = 0; i < idx.size(); ++i) idx[i] = i;
+    std::sort(idx.begin(), idx.end(),
+              [&](std::size_t a, std::size_t b) { return xs[a] < xs[b]; });
+    double total = 0.0;
+    for (double v : w) total += v;
+    if (total <= 0.0) return 0.0;
+    double cum = 0.0;
+    for (std::size_t k = 0; k < idx.size(); ++k) {
+        cum += w[idx[k]] / total;
+        if (cum >= q) return xs[idx[k]];
+    }
+    return xs[idx.back()];
+}
+
+double weighted_prob_up(const std::vector<double>& xs, const std::vector<double>& w) {
+    if (xs.empty() || xs.size() != w.size()) return 0.5;
+    double up = 0.5, down = 0.5; // Jeffreys-style additive smoothing
+    for (std::size_t i = 0; i < xs.size(); ++i) {
+        if (xs[i] > 0) up   += w[i];
+        else if (xs[i] < 0) down += w[i];
+    }
+    return up / (up + down);
+}
+
+std::vector<double> ewma_weights(std::size_t n, double half_life) {
+    std::vector<double> w(n, 1.0);
+    if (n == 0 || half_life <= 0.0) return w;
+    double lambda = std::log(2.0) / half_life;
+    for (std::size_t i = 0; i < n; ++i) {
+        // i=0 oldest, i=n-1 newest -> weight grows with i
+        double age = static_cast<double>(n - 1 - i);
+        w[i] = std::exp(-lambda * age);
+    }
+    return w;
+}
+
 double sign_test_p(const std::vector<double>& xs) {
     if (xs.empty()) return 1.0;
     int n_pos = 0, n_neg = 0;

@@ -39,6 +39,11 @@ DirectionalForecast forecast_from_sample(const std::vector<double>& sample) {
     f.var95 = stats::historical_var(sample, 0.05);
     f.es95  = stats::expected_shortfall(sample, 0.05);
     f.sign_test_p = stats::sign_test_p(sample);
+
+    auto w = stats::ewma_weights(sample.size(), f.ewma_half_life_samples);
+    f.weighted_prob_up = stats::weighted_prob_up(sample, w);
+    f.weighted_mean    = stats::weighted_mean(sample, w);
+    f.weighted_median  = stats::weighted_quantile(sample, w, 0.5);
     return f;
 }
 

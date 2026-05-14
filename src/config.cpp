@@ -26,6 +26,23 @@ Config load_config(const std::string& path) {
     cfg.mc_paths       = j.value("mc_paths", 10000);
     cfg.offline        = j.value("offline", false);
     cfg.cache_dir      = j.value("cache_dir", std::string(".cache"));
+    cfg.ewma_half_life_samples = j.value("ewma_half_life_samples", 24.0);
+    cfg.fdr_alpha              = j.value("fdr_alpha", 0.05);
+    cfg.enable_regime_conditioning = j.value("enable_regime_conditioning", true);
+    cfg.enable_garch               = j.value("enable_garch", true);
+    cfg.enable_portfolio_risk      = j.value("enable_portfolio_risk", true);
+    cfg.enable_stress_tests        = j.value("enable_stress_tests", true);
+    cfg.enable_backtest            = j.value("enable_backtest", true);
+    cfg.backtest_min_train         = j.value("backtest_min_train", 24);
+
+    if (j.contains("portfolio") && j["portfolio"].is_array()) {
+        for (const auto& h : j["portfolio"]) {
+            PortfolioHoldingCfg pc;
+            pc.asset_id = h.value("id", "");
+            pc.weight   = h.value("weight", 0.0);
+            if (!pc.asset_id.empty()) cfg.portfolio.push_back(pc);
+        }
+    }
 
     if (j.contains("return_horizons")) {
         cfg.return_horizons.clear();
@@ -70,9 +87,17 @@ void write_default_config(const std::string& path) {
         }},
         {"horizon_days", 90},
         {"history_years", 12},
-        {"mc_paths", 10000},
+        {"mc_paths", 20000},
         {"offline", false},
         {"return_horizons", {1, 5, 20}},
+        {"ewma_half_life_samples", 24},
+        {"fdr_alpha", 0.05},
+        {"enable_regime_conditioning", true},
+        {"enable_garch", true},
+        {"enable_portfolio_risk", true},
+        {"enable_stress_tests", true},
+        {"enable_backtest", true},
+        {"backtest_min_train", 24},
         {"events", {"CPI", "FOMC", "NFP", "PPI", "PCE", "UNEMPLOYMENT"}},
         {"assets", json::array({
             {{"id","aapl"}, {"name","Apple Inc."},  {"class","equity"},    {"yahoo","AAPL"}},
@@ -82,6 +107,12 @@ void write_default_config(const std::string& path) {
             {{"id","eth"},  {"name","Ethereum"},    {"class","crypto"},    {"coingecko","ethereum"}, {"yahoo","ETH-USD"}},
             {{"id","gld"},  {"name","Gold ETF"},    {"class","commodity"}, {"yahoo","GLD"}},
             {{"id","cl"},   {"name","WTI Crude"},   {"class","commodity"}, {"yahoo","CL=F"}}
+        })},
+        {"portfolio", json::array({
+            {{"id","spy"}, {"weight", 0.5}},
+            {{"id","tlt"}, {"weight", 0.3}},
+            {{"id","gld"}, {"weight", 0.1}},
+            {{"id","btc"}, {"weight", 0.1}}
         })}
     };
     std::ofstream f(path);

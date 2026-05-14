@@ -8,8 +8,19 @@
   "mc_paths": 20000,
   "offline": false,
   "cache_dir": ".cache",
+
   "return_horizons": [1, 5, 20],
   "events": ["CPI", "FOMC", "NFP", "PPI", "PCE", "UNEMPLOYMENT", "RETAIL_SALES"],
+
+  "ewma_half_life_samples": 24,
+  "fdr_alpha": 0.05,
+  "enable_regime_conditioning": true,
+  "enable_garch": true,
+  "enable_portfolio_risk": true,
+  "enable_stress_tests": true,
+  "enable_backtest": true,
+  "backtest_min_train": 24,
+
   "assets": [
     {"id": "aapl", "name": "Apple Inc.",       "class": "equity",    "yahoo": "AAPL"},
     {"id": "msft", "name": "Microsoft",        "class": "equity",    "yahoo": "MSFT"},
@@ -24,5 +35,14 @@
     {"id": "slv",  "name": "Silver ETF",       "class": "commodity", "yahoo": "SLV"},
     {"id": "uso",  "name": "Oil ETF",          "class": "commodity", "yahoo": "USO"},
     {"id": "dxy",  "name": "US Dollar Index",  "class": "fx",        "yahoo": "DX-Y.NYB"}
+  ],
+
+  "portfolio": [
+    {"id": "spy", "weight":  0.50},
+    {"id": "tlt", "weight":  0.20},
+    {"id": "gld", "weight":  0.10},
+    {"id": "btc", "weight":  0.05},
+    {"id": "eth", "weight":  0.05},
+    {"id": "uso", "weight":  0.10}
   ]
 }
