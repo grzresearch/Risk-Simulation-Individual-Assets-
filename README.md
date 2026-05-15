@@ -10,6 +10,116 @@ Ships as a CLI, a REST/Prometheus server, and a Docker container; persists
 runs to JSON files or Postgres; alerts to Slack; exports text / JSON / CSV /
 HTML / model-card.
 
+![Architecture](docs/images/01_architecture.svg)
+
+---
+
+## Visual tour of every module
+
+> All visualisations below are **mockups** that mirror the actual outputs the
+> engine produces. They show what each module returns; rendering uses the
+> same dark palette as the standalone HTML report.
+
+### 1. Direction forecast — empirical · EWMA-weighted · regime-conditional
+
+For every (asset × upcoming event) the engine emits three posterior
+probabilities of "up" along with the empirical 95% CI and the BH-q
+multiple-testing-adjusted significance.
+
+![Direction forecast](docs/images/02_direction_forecast.svg)
+
+### 2. Monte-Carlo terminal-price fan
+
+Day-1 shock drawn from the event-conditional empirical return distribution,
+days 2..N drift sampled from the unconditional baseline. 20 000 paths,
+parallelised with OpenMP.
+
+![Monte Carlo fan](docs/images/03_monte_carlo_fan.svg)
+
+### 3. GARCH(1,1) conditional volatility
+
+MLE fitted via Nelder-Mead with feasibility penalties; falls back to
+RiskMetrics (λ=0.94) on convergence failure. The 1-step-ahead σ is reported
+per asset and feeds the per-event risk band.
+
+![GARCH](docs/images/04_garch_volatility.svg)
+
+### 4. Macro regime timeline
+
+Rule-based classifier driven by CPI YoY, Fed Funds, Unemployment, VIX and
+SPY 3-month drawdown. Used to carve out a regime-conditional sub-sample of
+historical event reactions.
+
+![Regime](docs/images/05_regime_timeline.svg)
+
+### 5. Multiple-testing correction (Bonferroni & BH-FDR)
+
+When you screen 13 assets × 8 event kinds you get 100+ p-values: most
+"signals" you'd accept at α=0.05 are pure noise. The engine adjusts every
+sign-test p across the full grid.
+
+![FDR](docs/images/06_fdr_correction.svg)
+
+### 6. Calibration / reliability diagram
+
+Walk-forward forecasts are scored against realised outcomes via Brier-score,
+log-loss and a reliability diagram. The same loop emits the directional
+PnL Sharpe / Sortino / max-DD.
+
+![Calibration](docs/images/07_calibration.svg)
+
+### 7. EWMA time-decay weighting
+
+`weight = exp(-ln(2) · age / half_life)`. Recent history gets more weight
+in both the posterior P(up) and the weighted mean / weighted quantile.
+
+![EWMA weights](docs/images/08_ewma_weights.svg)
+
+### 8. Portfolio risk — VaR/CVaR + component-VaR + correlation
+
+Empirical covariance → Cholesky → multi-asset Monte-Carlo → portfolio
+P&L distribution. Component-VaR via finite-difference per holding.
+
+![Portfolio risk](docs/images/09_portfolio_risk.svg)
+
+### 9. Historical stress replays
+
+Library of nine canonical macro stress windows (GFC, Euro, Taper, Volmageddon,
+Q4-2018, Covid, 2022 CPI shock, SVB, China devaluation). Each asset's own
+price path is replayed through each window — no synthetic shocks.
+
+![Stress replays](docs/images/10_stress_replays.svg)
+
+### 10. Walk-forward backtest PnL
+
+For each historical event, build the forecast using only data strictly
+before it; size = `|P(up) - 0.5| · 2`, sign = direction. Aggregates to a
+cumulative PnL curve with max-DD shading.
+
+![Backtest PnL](docs/images/11_backtest_pnl.svg)
+
+### 11. Standalone HTML report
+
+`--html report.html` renders the full ScanOutput as a self-contained dark
+HTML page with no external assets. Good for pinning to Confluence / SharePoint
+or e-mailing.
+
+![HTML dashboard](docs/images/12_html_dashboard.svg)
+
+### 12. REST API + Prometheus metrics
+
+`--serve` launches a cpp-httplib server with `/healthz`, `/version`,
+`/metrics`, `/runs`, `/runs/{id}`, `/scan`. Optional bearer-token auth.
+
+![REST + metrics](docs/images/13_rest_metrics.svg)
+
+### 13. Governance — audit, RBAC, model card
+
+Append-only JSON-lines audit log, RBAC defaults (viewer / analyst / admin)
+and an SR 11-7-aligned Markdown model card generated alongside every run.
+
+![Governance](docs/images/14_governance.svg)
+
 ---
 
 ## Features at a glance
@@ -180,6 +290,7 @@ src/
 tests/           statistics + advanced + production tests
 schema/          Postgres schema
 deploy/          Prometheus scrape config
+docs/images/     SVG mockups embedded in this README
 Dockerfile, docker-compose.yml
 .github/workflows/ci.yml
 config.example.json

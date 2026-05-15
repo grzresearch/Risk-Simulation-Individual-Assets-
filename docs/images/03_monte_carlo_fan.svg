@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <style>
+      .bg { fill:#0e1015; }
+      .title { fill:#e6e9ef; font-size:18px; font-weight:700; }
+      .sub { fill:#8590a6; font-size:12px; }
+      .axis { stroke:#3a4150; stroke-width:1; }
+      .grid { stroke:#1c2230; stroke-width:1; }
+      .axislabel { fill:#8590a6; font-size:10px; }
+      .ann { fill:#e6e9ef; font-size:11px; }
+    </style>
+    <linearGradient id="band95" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6aa3ff" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#6aa3ff" stop-opacity="0.05"/>
+    </linearGradient>
+    <linearGradient id="band68" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6aa3ff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#6aa3ff" stop-opacity="0.15"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="480" class="bg"/>
+  <text x="20" y="32" class="title">Monte-Carlo terminal-price fan &#8212; SPY, 5d horizon</text>
+  <text x="20" y="52" class="sub">empirical event-conditional shock day 1, bootstrap baseline drift days 2..5  &#183;  20 000 paths</text>
+
+  <!-- chart area: x 80-920, y 80-380 -->
+  <g>
+    <!-- grid -->
+    <line x1="80"  y1="380" x2="920" y2="380" class="axis"/>
+    <line x1="80"  y1="80"  x2="80"  y2="380" class="axis"/>
+    <line x1="80"  y1="320" x2="920" y2="320" class="grid"/>
+    <line x1="80"  y1="260" x2="920" y2="260" class="grid"/>
+    <line x1="80"  y1="200" x2="920" y2="200" class="grid"/>
+    <line x1="80"  y1="140" x2="920" y2="140" class="grid"/>
+
+    <!-- y labels -->
+    <text x="74" y="384" text-anchor="end" class="axislabel">510</text>
+    <text x="74" y="324" text-anchor="end" class="axislabel">520</text>
+    <text x="74" y="264" text-anchor="end" class="axislabel">530</text>
+    <text x="74" y="204" text-anchor="end" class="axislabel">540</text>
+    <text x="74" y="144" text-anchor="end" class="axislabel">550</text>
+
+    <!-- x labels (D0 .. D5) -->
+    <text x="80"  y="400" text-anchor="middle" class="axislabel">D0</text>
+    <text x="248" y="400" text-anchor="middle" class="axislabel">D+1</text>
+    <text x="416" y="400" text-anchor="middle" class="axislabel">D+2</text>
+    <text x="584" y="400" text-anchor="middle" class="axislabel">D+3</text>
+    <text x="752" y="400" text-anchor="middle" class="axislabel">D+4</text>
+    <text x="920" y="400" text-anchor="middle" class="axislabel">D+5</text>
+
+    <!-- 95% CI fan: connect (D0 spot=528) to (D5 p05=512, p95=548) -->
+    <path d="M 80,260 L 248,254 L 416,243 L 584,228 L 752,212 L 920,196
+             L 920,332 L 752,316 L 584,300 L 416,286 L 248,274 L 80,260 Z"
+          fill="url(#band95)"/>
+    <!-- 68% CI fan -->
+    <path d="M 80,260 L 248,256 L 416,250 L 584,242 L 752,232 L 920,222
+             L 920,302 L 752,294 L 584,284 L 416,274 L 248,266 L 80,260 Z"
+          fill="url(#band68)"/>
+
+    <!-- median path (p50) -->
+    <polyline points="80,260 248,258 416,254 584,248 752,242 920,235"
+              fill="none" stroke="#6aa3ff" stroke-width="2"/>
+    <!-- p95 path -->
+    <polyline points="80,260 248,254 416,243 584,228 752,212 920,196"
+              fill="none" stroke="#5bd99a" stroke-width="1.4" stroke-dasharray="4 3"/>
+    <!-- p05 path -->
+    <polyline points="80,260 248,274 416,286 584,300 752,316 920,332"
+              fill="none" stroke="#ff7a8a" stroke-width="1.4" stroke-dasharray="4 3"/>
+
+    <!-- spot dot -->
+    <circle cx="80" cy="260" r="4" fill="#e6e9ef"/>
+    <text x="86" y="252" class="ann">spot 528.41</text>
+
+    <!-- terminals -->
+    <circle cx="920" cy="196" r="4" fill="#5bd99a"/>
+    <text x="884" y="190" text-anchor="end" class="ann" fill="#5bd99a">p95 547.92</text>
+    <circle cx="920" cy="235" r="4" fill="#6aa3ff"/>
+    <text x="884" y="240" text-anchor="end" class="ann" fill="#6aa3ff">p50 529.07</text>
+    <circle cx="920" cy="332" r="4" fill="#ff7a8a"/>
+    <text x="884" y="346" text-anchor="end" class="ann" fill="#ff7a8a">p05 512.18</text>
+
+    <!-- event marker -->
+    <line x1="248" y1="80" x2="248" y2="380" stroke="#f0c674" stroke-width="1" stroke-dasharray="3 3"/>
+    <text x="252" y="92" class="ann" fill="#f0c674">CPI release</text>
+  </g>
+
+  <text x="20" y="450" class="sub">band shaded 5-95% (light) and 16-84% (medium); dashed lines are p05 and p95</text>
+</svg>

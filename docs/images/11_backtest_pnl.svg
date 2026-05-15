@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <style>
+      .bg { fill:#0e1015; }
+      .title { fill:#e6e9ef; font-size:18px; font-weight:700; }
+      .sub { fill:#8590a6; font-size:12px; }
+      .axis { stroke:#3a4150; stroke-width:1; }
+      .grid { stroke:#1c2230; stroke-width:1; }
+      .axislabel { fill:#8590a6; font-size:10px; }
+      .ann { fill:#e6e9ef; font-size:11px; }
+      .kpi-label { fill:#8590a6; font-size:11px; }
+      .kpi-value { fill:#e6e9ef; font-size:18px; font-weight:700; }
+    </style>
+    <linearGradient id="dd" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff7a8a" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#ff7a8a" stop-opacity="0.0"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="480" class="bg"/>
+  <text x="20" y="32" class="title">Walk-forward backtest &#8212; PnL of forecast-driven long/short strategy</text>
+  <text x="20" y="52" class="sub">size = |P(up) - 0.5| &#183; 2,  sign = direction.  Train uses only events strictly before the test event.</text>
+
+  <!-- KPI strip -->
+  <g transform="translate(20,80)">
+    <rect x="0"   y="0" width="160" height="64" rx="8" fill="#1a1f2c" stroke="#2a2f3a"/>
+    <text x="14"  y="20" class="kpi-label">N events</text>
+    <text x="14"  y="48" class="kpi-value">128</text>
+
+    <rect x="180" y="0" width="160" height="64" rx="8" fill="#1a1f2c" stroke="#2a2f3a"/>
+    <text x="194" y="20" class="kpi-label">Hit rate</text>
+    <text x="194" y="48" class="kpi-value" fill="#5bd99a">58.3%</text>
+
+    <rect x="360" y="0" width="160" height="64" rx="8" fill="#1a1f2c" stroke="#2a2f3a"/>
+    <text x="374" y="20" class="kpi-label">Sharpe (ann.)</text>
+    <text x="374" y="48" class="kpi-value" fill="#5bd99a">0.74</text>
+
+    <rect x="540" y="0" width="160" height="64" rx="8" fill="#1a1f2c" stroke="#2a2f3a"/>
+    <text x="554" y="20" class="kpi-label">Sortino</text>
+    <text x="554" y="48" class="kpi-value" fill="#5bd99a">1.12</text>
+
+    <rect x="720" y="0" width="160" height="64" rx="8" fill="#1a1f2c" stroke="#2a2f3a"/>
+    <text x="734" y="20" class="kpi-label">Max drawdown</text>
+    <text x="734" y="48" class="kpi-value" fill="#ff7a8a">-8.4%</text>
+  </g>
+
+  <!-- Chart 60-940, y 180-420 -->
+  <g>
+    <line x1="60" y1="420" x2="940" y2="420" class="axis"/>
+    <line x1="60" y1="180" x2="60"  y2="420" class="axis"/>
+    <line x1="60" y1="180" x2="940" y2="180" class="grid"/>
+    <line x1="60" y1="240" x2="940" y2="240" class="grid"/>
+    <line x1="60" y1="300" x2="940" y2="300" class="grid"/>
+    <line x1="60" y1="360" x2="940" y2="360" class="grid"/>
+
+    <text x="56" y="184" text-anchor="end" class="axislabel">+30%</text>
+    <text x="56" y="244" text-anchor="end" class="axislabel">+20%</text>
+    <text x="56" y="304" text-anchor="end" class="axislabel">+10%</text>
+    <text x="56" y="364" text-anchor="end" class="axislabel">0%</text>
+    <text x="56" y="424" text-anchor="end" class="axislabel">-10%</text>
+
+    <text x="60"  y="440" text-anchor="middle" class="axislabel">2014</text>
+    <text x="200" y="440" text-anchor="middle" class="axislabel">2016</text>
+    <text x="340" y="440" text-anchor="middle" class="axislabel">2018</text>
+    <text x="480" y="440" text-anchor="middle" class="axislabel">2020</text>
+    <text x="620" y="440" text-anchor="middle" class="axislabel">2022</text>
+    <text x="760" y="440" text-anchor="middle" class="axislabel">2024</text>
+    <text x="900" y="440" text-anchor="middle" class="axislabel">2026</text>
+
+    <!-- Drawdown shading from peak around mid-2018 -->
+    <path d="M 200,240 L 340,250 L 360,290 L 400,330 L 460,360 L 480,366 L 540,330 L 600,290 L 200,290 Z" fill="url(#dd)"/>
+
+    <!-- Cumulative PnL line -->
+    <polyline fill="none" stroke="#6aa3ff" stroke-width="2.4"
+      points="60,360 100,355 140,348 180,340 220,332 260,322 300,314 340,308 380,302 420,318 460,340 500,348 540,332 580,318 620,304 660,290 700,274 740,258 780,240 820,222 860,210 900,198 940,188"/>
+
+    <!-- annotations -->
+    <line x1="460" y1="340" x2="460" y2="166" stroke="#ff7a8a" stroke-width="0.8" stroke-dasharray="3 2"/>
+    <text x="460" y="160" text-anchor="middle" class="ann" fill="#ff7a8a">max drawdown -8.4%</text>
+
+    <circle cx="940" cy="188" r="4" fill="#5bd99a"/>
+    <text x="934" y="180" text-anchor="end" class="ann" fill="#5bd99a">total PnL +28.6%</text>
+  </g>
+</svg>
