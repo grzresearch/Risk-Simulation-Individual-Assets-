@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <style>
+      .bg { fill:#0e1015; }
+      .title { fill:#e6e9ef; font-size:18px; font-weight:700; }
+      .sub { fill:#8590a6; font-size:12px; }
+      .panel { fill:#1a1f2c; stroke:#2a2f3a; }
+      .label { fill:#e6e9ef; font-size:12px; font-weight:700; }
+      .code { fill:#e6e9ef; font-size:10.5px; font-family:monospace; }
+      .key { fill:#7ecbff; font-family:monospace; font-size:10.5px; }
+      .val { fill:#5bd99a; font-family:monospace; font-size:10.5px; }
+      .desc { fill:#8590a6; font-size:11px; }
+      .perm-yes { fill:#5bd99a; font-weight:700; }
+      .perm-no  { fill:#ff7a8a; font-weight:700; }
+    </style>
+  </defs>
+  <rect width="960" height="520" class="bg"/>
+  <text x="20" y="32" class="title">Governance &#8212; audit log, RBAC, model card</text>
+  <text x="20" y="52" class="sub">SR 11-7 aligned: who did what + provenance + reproducibility + entitlement</text>
+
+  <!-- Audit log panel -->
+  <rect x="20" y="80" width="600" height="200" rx="8" class="panel"/>
+  <text x="36" y="104" class="label">Audit log (JSON-lines, append-only, mutex-guarded)</text>
+
+  <g transform="translate(36,128)" font-family="monospace" font-size="10.5">
+    <text x="0" y="0">
+      <tspan class="key">{"ts":</tspan><tspan class="val">"2026-05-14T09:00:01Z"</tspan><tspan class="key">,"actor":</tspan><tspan class="val">"system"</tspan><tspan class="key">,"action":</tspan><tspan class="val">"startup"</tspan><tspan class="key">,...}</tspan>
+    </text>
+    <text x="0" y="18">
+      <tspan class="key">{"ts":</tspan><tspan class="val">"2026-05-14T09:00:04Z"</tspan><tspan class="key">,"actor":</tspan><tspan class="val">"system"</tspan><tspan class="key">,"action":</tspan><tspan class="val">"scan.completed"</tspan><tspan class="key">,...}</tspan>
+    </text>
+    <text x="0" y="36">
+      <tspan class="key">{"ts":</tspan><tspan class="val">"2026-05-14T09:00:04Z"</tspan><tspan class="key">,"actor":</tspan><tspan class="val">"system"</tspan><tspan class="key">,"action":</tspan><tspan class="val">"store.write"</tspan><tspan class="key">,...}</tspan>
+    </text>
+    <text x="0" y="54">
+      <tspan class="key">{"ts":</tspan><tspan class="val">"2026-05-14T09:00:05Z"</tspan><tspan class="key">,"actor":</tspan><tspan class="val">"alice"</tspan><tspan class="key">,"action":</tspan><tspan class="val">"report.export"</tspan><tspan class="key">,</tspan>
+    </text>
+    <text x="32" y="72">
+      <tspan class="key">"format":</tspan><tspan class="val">"csv"</tspan><tspan class="key">,"path":</tspan><tspan class="val">"/runs/spy_cpi.csv"</tspan><tspan class="key">,"version":</tspan><tspan class="val">"0.2.0"</tspan><tspan class="key">,"git":</tspan><tspan class="val">"e051583"</tspan><tspan class="key">}</tspan>
+    </text>
+    <text x="0" y="98">
+      <tspan class="key">{"ts":</tspan><tspan class="val">"2026-05-14T09:00:05Z"</tspan><tspan class="key">,"actor":</tspan><tspan class="val">"system"</tspan><tspan class="key">,"action":</tspan><tspan class="val">"alert.dispatch"</tspan><tspan class="key">,</tspan>
+    </text>
+    <text x="32" y="116">
+      <tspan class="key">"count":</tspan><tspan class="val">"5"</tspan><tspan class="key">,"ok":</tspan><tspan class="val">"true"</tspan><tspan class="key">}</tspan>
+    </text>
+  </g>
+
+  <text x="36" y="266" class="desc">Ingest into Splunk / ELK / Loki via standard JSON parser; one event per line.</text>
+
+  <!-- RBAC panel -->
+  <rect x="640" y="80" width="300" height="200" rx="8" class="panel"/>
+  <text x="656" y="104" class="label">RBAC defaults</text>
+
+  <g transform="translate(656,128)" font-size="11">
+    <text x="0"   y="0"  class="desc">role</text>
+    <text x="120" y="0"  class="desc">read</text>
+    <text x="170" y="0"  class="desc">scan</text>
+    <text x="218" y="0"  class="desc">export</text>
+    <text x="270" y="0"  class="desc">manage</text>
+
+    <text x="0"   y="22" fill="#e6e9ef">viewer</text>
+    <text x="124" y="22" class="perm-yes">y</text>
+    <text x="174" y="22" class="perm-no">n</text>
+    <text x="225" y="22" class="perm-no">n</text>
+    <text x="277" y="22" class="perm-no">n</text>
+
+    <text x="0"   y="44" fill="#e6e9ef">analyst</text>
+    <text x="124" y="44" class="perm-yes">y</text>
+    <text x="174" y="44" class="perm-yes">y</text>
+    <text x="225" y="44" class="perm-yes">y</text>
+    <text x="277" y="44" class="perm-no">n</text>
+
+    <text x="0"   y="66" fill="#e6e9ef">admin</text>
+    <text x="124" y="66" class="perm-yes">y</text>
+    <text x="174" y="66" class="perm-yes">y</text>
+    <text x="225" y="66" class="perm-yes">y</text>
+    <text x="277" y="66" class="perm-yes">y</text>
+
+    <text x="0"   y="116" class="desc">Roles also support per-asset and per-event</text>
+    <text x="0"   y="132" class="desc">filtering (allowed_asset_ids,</text>
+    <text x="0"   y="148" class="desc">allowed_event_kinds).</text>
+  </g>
+
+  <!-- Model card panel -->
+  <rect x="20" y="300" width="920" height="200" rx="8" class="panel"/>
+  <text x="36" y="324" class="label">Model card (Markdown, --model-card)</text>
+
+  <g transform="translate(36,348)" font-family="monospace" font-size="10.5" fill="#e6e9ef">
+    <text x="0" y="0"  fill="#7ecbff"># macro_risk &#8212; Model Card</text>
+    <text x="0" y="18" fill="#8590a6">**Version:** 0.2.0  **Git SHA:** e051583  **Build date:** May 14 2026</text>
+    <text x="0" y="40" fill="#7ecbff">## 1. Intended use</text>
+    <text x="0" y="56" fill="#8590a6">Directional probability + risk for individual assets following macro releases.</text>
+    <text x="0" y="78" fill="#7ecbff">## 4. Methodology summary</text>
+    <text x="0" y="94" fill="#8590a6">Empirical conditional return distribution + Bayesian P(up) + EWMA + regime + GARCH</text>
+    <text x="0" y="110" fill="#8590a6">+ Cholesky portfolio MC + walk-forward backtest + Bonferroni / BH-FDR.</text>
+    <text x="0" y="132" fill="#7ecbff">## 5. Validation evidence</text>
+    <text x="0" y="148" fill="#8590a6">| Asset | Event | N | Brier | LogLoss | Hit | Sharpe | MaxDD |</text>
+    <text x="0" y="164" fill="#8590a6">| spy   | CPI   | 73 | 0.221 | 0.642 | 58.3% | 0.74 | -8.4% |</text>
+  </g>
+</svg>

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <style>
+      .bg { fill:#0e1015; }
+      .title { fill:#e6e9ef; font-size:18px; font-weight:700; }
+      .sub { fill:#8590a6; font-size:12px; }
+      .axis { stroke:#3a4150; stroke-width:1; }
+      .grid { stroke:#1c2230; stroke-width:1; }
+      .axislabel { fill:#8590a6; font-size:10px; }
+      .ann { fill:#e6e9ef; font-size:11px; }
+    </style>
+  </defs>
+  <rect width="960" height="440" class="bg"/>
+  <text x="20" y="32" class="title">Multiple-testing correction &#8212; Bonferroni &amp; Benjamini-Hochberg</text>
+  <text x="20" y="52" class="sub">73 (asset &#215; event) sign-test p-values  &#183;  &#945; = 5%, m = 73  &#183;  green = passes BH-FDR</text>
+
+  <!-- chart 60-940, y 80-360 -->
+  <g>
+    <line x1="60"  y1="360" x2="940" y2="360" class="axis"/>
+    <line x1="60"  y1="80"  x2="60"  y2="360" class="axis"/>
+    <line x1="60"  y1="290" x2="940" y2="290" class="grid"/>
+    <line x1="60"  y1="220" x2="940" y2="220" class="grid"/>
+    <line x1="60"  y1="150" x2="940" y2="150" class="grid"/>
+
+    <text x="56" y="364" text-anchor="end" class="axislabel">0.0</text>
+    <text x="56" y="294" text-anchor="end" class="axislabel">0.25</text>
+    <text x="56" y="224" text-anchor="end" class="axislabel">0.50</text>
+    <text x="56" y="154" text-anchor="end" class="axislabel">0.75</text>
+    <text x="56" y="84"  text-anchor="end" class="axislabel">1.00</text>
+
+    <text x="60"  y="380" text-anchor="middle" class="axislabel">rank 1</text>
+    <text x="940" y="380" text-anchor="middle" class="axislabel">rank 73</text>
+
+    <!-- BH threshold line: i/m * alpha = i * 0.05/73, slope tiny -->
+    <!-- at rank 1: 0.000685, at rank 73: 0.05 -->
+    <!-- y = 360 - p*280  ; for p=0.05 -> y=346, for p=0.000685 -> y=359.8 -->
+    <line x1="60" y1="359.8" x2="940" y2="346" stroke="#5bd99a" stroke-width="1.5" stroke-dasharray="3 2"/>
+    <text x="940" y="338" text-anchor="end" class="ann" fill="#5bd99a">BH line: i/m &#183; &#945;</text>
+
+    <!-- alpha=0.05 unadjusted line -->
+    <line x1="60" y1="346" x2="940" y2="346" stroke="#f0c674" stroke-width="1" stroke-dasharray="3 2"/>
+    <text x="940" y="354" text-anchor="end" class="ann" fill="#f0c674">naive &#945; = 0.05</text>
+
+    <!-- Bonferroni line: alpha/m = 0.000685 -> y=359.8 (almost on x-axis) -->
+    <line x1="60" y1="359.8" x2="940" y2="359.8" stroke="#ff7a8a" stroke-width="1" stroke-dasharray="3 2"/>
+    <text x="940" y="375" text-anchor="end" class="ann" fill="#ff7a8a">Bonferroni: &#945;/m</text>
+
+    <!-- p-value dots, sorted ascending; first ~5 below BH line -->
+    <g>
+      <circle cx="72"  cy="359.6" r="3" fill="#5bd99a"/>
+      <circle cx="84"  cy="359.4" r="3" fill="#5bd99a"/>
+      <circle cx="96"  cy="358.8" r="3" fill="#5bd99a"/>
+      <circle cx="108" cy="358.4" r="3" fill="#5bd99a"/>
+      <circle cx="120" cy="357.6" r="3" fill="#5bd99a"/>
+      <circle cx="132" cy="356.4" r="3" fill="#f0c674"/>
+      <circle cx="144" cy="354.8" r="3" fill="#f0c674"/>
+      <circle cx="156" cy="352.6" r="3" fill="#f0c674"/>
+      <circle cx="168" cy="350.6" r="3" fill="#e6e9ef"/>
+      <circle cx="180" cy="347.8" r="3" fill="#e6e9ef"/>
+      <circle cx="192" cy="344.0" r="3" fill="#e6e9ef"/>
+      <circle cx="204" cy="340.0" r="3" fill="#e6e9ef"/>
+      <circle cx="216" cy="335.0" r="3" fill="#e6e9ef"/>
+      <circle cx="228" cy="329.0" r="3" fill="#e6e9ef"/>
+      <circle cx="240" cy="322.0" r="3" fill="#e6e9ef"/>
+      <circle cx="252" cy="314.0" r="3" fill="#e6e9ef"/>
+      <circle cx="264" cy="305.0" r="3" fill="#e6e9ef"/>
+      <circle cx="276" cy="296.0" r="3" fill="#e6e9ef"/>
+      <circle cx="288" cy="287.0" r="3" fill="#e6e9ef"/>
+      <circle cx="300" cy="278.0" r="3" fill="#e6e9ef"/>
+      <circle cx="312" cy="270.0" r="3" fill="#e6e9ef"/>
+      <circle cx="324" cy="262.0" r="3" fill="#e6e9ef"/>
+      <circle cx="336" cy="254.0" r="3" fill="#e6e9ef"/>
+      <circle cx="348" cy="247.0" r="3" fill="#e6e9ef"/>
+      <circle cx="360" cy="240.0" r="3" fill="#e6e9ef"/>
+      <circle cx="372" cy="233.0" r="3" fill="#e6e9ef"/>
+      <circle cx="384" cy="227.0" r="3" fill="#e6e9ef"/>
+      <circle cx="396" cy="221.0" r="3" fill="#e6e9ef"/>
+      <circle cx="408" cy="215.0" r="3" fill="#e6e9ef"/>
+      <circle cx="420" cy="209.0" r="3" fill="#e6e9ef"/>
+      <circle cx="432" cy="203.0" r="3" fill="#e6e9ef"/>
+      <circle cx="444" cy="197.0" r="3" fill="#e6e9ef"/>
+      <circle cx="456" cy="191.0" r="3" fill="#e6e9ef"/>
+      <circle cx="468" cy="185.0" r="3" fill="#e6e9ef"/>
+      <circle cx="480" cy="179.0" r="3" fill="#e6e9ef"/>
+      <circle cx="492" cy="173.0" r="3" fill="#e6e9ef"/>
+      <circle cx="504" cy="168.0" r="3" fill="#e6e9ef"/>
+      <circle cx="516" cy="162.0" r="3" fill="#e6e9ef"/>
+      <circle cx="528" cy="156.0" r="3" fill="#e6e9ef"/>
+      <circle cx="540" cy="151.0" r="3" fill="#e6e9ef"/>
+      <circle cx="552" cy="146.0" r="3" fill="#e6e9ef"/>
+      <circle cx="564" cy="141.0" r="3" fill="#e6e9ef"/>
+      <circle cx="576" cy="136.0" r="3" fill="#e6e9ef"/>
+      <circle cx="588" cy="131.0" r="3" fill="#e6e9ef"/>
+      <circle cx="600" cy="126.0" r="3" fill="#e6e9ef"/>
+      <circle cx="612" cy="121.0" r="3" fill="#e6e9ef"/>
+      <circle cx="624" cy="117.0" r="3" fill="#e6e9ef"/>
+      <circle cx="636" cy="113.0" r="3" fill="#e6e9ef"/>
+      <circle cx="648" cy="109.0" r="3" fill="#e6e9ef"/>
+      <circle cx="660" cy="105.0" r="3" fill="#e6e9ef"/>
+      <circle cx="672" cy="101.0" r="3" fill="#e6e9ef"/>
+      <circle cx="684" cy="98.0"  r="3" fill="#e6e9ef"/>
+      <circle cx="696" cy="95.0"  r="3" fill="#e6e9ef"/>
+      <circle cx="708" cy="92.0"  r="3" fill="#e6e9ef"/>
+      <circle cx="720" cy="89.0"  r="3" fill="#e6e9ef"/>
+    </g>
+  </g>
+
+  <text x="60"  y="406" class="sub">5 of the 73 hypotheses survive Benjamini-Hochberg at 5% FDR &#8212; without correction we would naively flag 12.</text>
+  <text x="60"  y="424" class="sub">A row in the report turns green only when its <tspan font-weight="700">bh_q</tspan> is below the configured FDR alpha.</text>
+</svg>

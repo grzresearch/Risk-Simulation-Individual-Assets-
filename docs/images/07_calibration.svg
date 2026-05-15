@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <style>
+      .bg { fill:#0e1015; }
+      .title { fill:#e6e9ef; font-size:18px; font-weight:700; }
+      .sub { fill:#8590a6; font-size:12px; }
+      .axis { stroke:#3a4150; stroke-width:1; }
+      .grid { stroke:#1c2230; stroke-width:1; }
+      .axislabel { fill:#8590a6; font-size:10px; }
+      .ann { fill:#e6e9ef; font-size:11px; }
+      .kpi-label { fill:#8590a6; font-size:11px; }
+      .kpi-value { fill:#e6e9ef; font-size:24px; font-weight:700; }
+    </style>
+  </defs>
+  <rect width="960" height="440" class="bg"/>
+  <text x="20" y="32" class="title">Calibration / reliability diagram &#8212; walk-forward forecasts</text>
+  <text x="20" y="52" class="sub">predicted P(up) vs empirical hit rate per bin  &#183;  closer to diagonal = better calibration</text>
+
+  <!-- chart 60-500 -->
+  <g transform="translate(60,80)">
+    <!-- frame: 0..1 mapped to 380x300 -->
+    <line x1="0" y1="300" x2="380" y2="300" class="axis"/>
+    <line x1="0" y1="0"   x2="0"   y2="300" class="axis"/>
+    <!-- diagonal -->
+    <line x1="0" y1="300" x2="380" y2="0" stroke="#5bd99a" stroke-dasharray="4 3" stroke-width="1.4"/>
+
+    <text x="380" y="-6"  text-anchor="end" class="ann" fill="#5bd99a">perfect calibration</text>
+
+    <!-- axis labels -->
+    <text x="0"   y="318" text-anchor="middle" class="axislabel">0.0</text>
+    <text x="95"  y="318" text-anchor="middle" class="axislabel">0.25</text>
+    <text x="190" y="318" text-anchor="middle" class="axislabel">0.5</text>
+    <text x="285" y="318" text-anchor="middle" class="axislabel">0.75</text>
+    <text x="380" y="318" text-anchor="middle" class="axislabel">1.0</text>
+    <text x="190" y="338" text-anchor="middle" class="sub">predicted P(up)</text>
+
+    <text x="-6" y="304" text-anchor="end" class="axislabel">0.0</text>
+    <text x="-6" y="229" text-anchor="end" class="axislabel">0.25</text>
+    <text x="-6" y="154" text-anchor="end" class="axislabel">0.5</text>
+    <text x="-6" y="79"  text-anchor="end" class="axislabel">0.75</text>
+    <text x="-6" y="4"   text-anchor="end" class="axislabel">1.0</text>
+    <text x="-30" y="156" transform="rotate(-90,-30,156)" text-anchor="middle" class="sub">empirical frequency</text>
+
+    <!-- 10 bins, slightly miscalibrated (overconfident at extremes) -->
+    <g>
+      <!-- bin centers x: 19, 57, 95, 133, 171, 209, 247, 285, 323, 361 -->
+      <!-- predicted = bin center; empirical with shrinkage -->
+      <!-- pred 0.05 -> emp 0.10 ; map y: 300-300*emp -->
+      <line x1="19"  y1="300" x2="19"  y2="270" stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="19"  cy="270" r="5" fill="#6aa3ff"/>
+      <line x1="57"  y1="300" x2="57"  y2="237" stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="57"  cy="237" r="5" fill="#6aa3ff"/>
+      <line x1="95"  y1="300" x2="95"  y2="207" stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="95"  cy="207" r="5" fill="#6aa3ff"/>
+      <line x1="133" y1="300" x2="133" y2="178" stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="133" cy="178" r="5" fill="#6aa3ff"/>
+      <line x1="171" y1="300" x2="171" y2="148" stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="171" cy="148" r="5" fill="#6aa3ff"/>
+      <line x1="209" y1="300" x2="209" y2="142" stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="209" cy="142" r="5" fill="#6aa3ff"/>
+      <line x1="247" y1="300" x2="247" y2="113" stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="247" cy="113" r="5" fill="#6aa3ff"/>
+      <line x1="285" y1="300" x2="285" y2="92"  stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="285" cy="92"  r="5" fill="#6aa3ff"/>
+      <line x1="323" y1="300" x2="323" y2="62"  stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="323" cy="62"  r="5" fill="#6aa3ff"/>
+      <line x1="361" y1="300" x2="361" y2="32"  stroke="#6aa3ff" stroke-width="2"/>
+      <circle cx="361" cy="32"  r="5" fill="#6aa3ff"/>
+    </g>
+  </g>
+
+  <!-- KPI panel right -->
+  <g transform="translate(540,90)">
+    <rect x="0" y="0" width="380" height="300" rx="8" fill="#1a1f2c" stroke="#2a2f3a"/>
+    <text x="20" y="34" class="ann" font-weight="700">Backtest scores (SPY, CPI, 5d horizon)</text>
+
+    <text x="20" y="78"  class="kpi-label">Brier score (lower = better)</text>
+    <text x="20" y="106" class="kpi-value">0.221</text>
+
+    <text x="200" y="78" class="kpi-label">Log-loss</text>
+    <text x="200" y="106" class="kpi-value">0.642</text>
+
+    <text x="20" y="156"  class="kpi-label">Hit rate</text>
+    <text x="20" y="184" class="kpi-value" fill="#5bd99a">58.3%</text>
+
+    <text x="200" y="156" class="kpi-label">Sharpe (annualised)</text>
+    <text x="200" y="184" class="kpi-value" fill="#5bd99a">0.74</text>
+
+    <text x="20" y="234"  class="kpi-label">Sortino</text>
+    <text x="20" y="262" class="kpi-value" fill="#5bd99a">1.12</text>
+
+    <text x="200" y="234" class="kpi-label">Max drawdown</text>
+    <text x="200" y="262" class="kpi-value" fill="#ff7a8a">-8.4%</text>
+  </g>
+
+  <text x="20" y="420" class="sub">Reliability bins are emitted in the JSON output as `reliability_bins[]` for plotting in BI tools.</text>
+</svg>

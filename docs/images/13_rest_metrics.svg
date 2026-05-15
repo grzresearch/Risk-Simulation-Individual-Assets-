@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <style>
+      .bg { fill:#0e1015; }
+      .title { fill:#e6e9ef; font-size:18px; font-weight:700; }
+      .sub { fill:#8590a6; font-size:12px; }
+      .panel { fill:#1a1f2c; stroke:#2a2f3a; }
+      .label { fill:#e6e9ef; font-size:12px; }
+      .code { fill:#e6e9ef; font-size:11px; font-family:monospace; }
+      .verb-get { fill:#5bd99a; font-family:monospace; font-size:11px; font-weight:700; }
+      .verb-post { fill:#f0c674; font-family:monospace; font-size:11px; font-weight:700; }
+      .path { fill:#7ecbff; font-family:monospace; font-size:11px; }
+      .desc { fill:#8590a6; font-size:11px; }
+    </style>
+  </defs>
+  <rect width="960" height="480" class="bg"/>
+  <text x="20" y="32" class="title">REST API + Prometheus &#8212; production endpoints</text>
+  <text x="20" y="52" class="sub">launch with <tspan fill="#7ecbff" font-family="monospace">macro_risk --config c.json --serve</tspan>  &#183;  bearer-token gated when api_token is set</text>
+
+  <!-- Endpoints panel -->
+  <rect x="20" y="80" width="460" height="380" rx="8" class="panel"/>
+  <text x="36" y="106" class="label" font-weight="700">Endpoints</text>
+
+  <g transform="translate(36,128)">
+    <text x="0"  y="0"  class="verb-get">GET</text>
+    <text x="44" y="0"  class="path">/healthz</text>
+    <text x="0"  y="16" class="desc">liveness + version + git SHA</text>
+
+    <text x="0"  y="46" class="verb-get">GET</text>
+    <text x="44" y="46" class="path">/version</text>
+    <text x="0"  y="62" class="desc">build provenance JSON</text>
+
+    <text x="0"  y="92" class="verb-get">GET</text>
+    <text x="44" y="92" class="path">/metrics</text>
+    <text x="0"  y="108" class="desc">Prometheus text exposition</text>
+
+    <text x="0"  y="138" class="verb-get">GET</text>
+    <text x="44" y="138" class="path">/runs</text>
+    <text x="0"  y="154" class="desc">list latest persisted run IDs</text>
+
+    <text x="0"  y="184" class="verb-get">GET</text>
+    <text x="44" y="184" class="path">/runs/{id}</text>
+    <text x="0"  y="200" class="desc">full ScanOutput JSON for a run</text>
+
+    <text x="0"  y="230" class="verb-post">POST</text>
+    <text x="50" y="230" class="path">/scan</text>
+    <text x="0"  y="246" class="desc">trigger a fresh scan, returns ScanOutput</text>
+
+    <text x="0"  y="290" class="desc">Authorization: Bearer &lt;api_token&gt;</text>
+    <text x="0"  y="306" class="desc">required for /runs* and /scan when configured</text>
+  </g>
+
+  <!-- Metrics panel -->
+  <rect x="500" y="80" width="440" height="380" rx="8" class="panel"/>
+  <text x="516" y="106" class="label" font-weight="700">/metrics &#8212; Prometheus text</text>
+
+  <g transform="translate(516,130)" font-family="monospace" font-size="11">
+    <text x="0" y="0"   fill="#8590a6"># TYPE macro_scans_total counter</text>
+    <text x="0" y="18"  fill="#e6e9ef">macro_scans_total <tspan fill="#5bd99a">142</tspan></text>
+
+    <text x="0" y="44"  fill="#8590a6"># TYPE macro_scan_errors_total counter</text>
+    <text x="0" y="62"  fill="#e6e9ef">macro_scan_errors_total <tspan fill="#f0c674">3</tspan></text>
+
+    <text x="0" y="88"  fill="#8590a6"># TYPE macro_last_scan_seconds gauge</text>
+    <text x="0" y="106" fill="#e6e9ef">macro_last_scan_seconds <tspan fill="#7ecbff">3.214</tspan></text>
+
+    <text x="0" y="132" fill="#8590a6"># TYPE macro_last_scan_assets gauge</text>
+    <text x="0" y="150" fill="#e6e9ef">macro_last_scan_assets <tspan fill="#7ecbff">13</tspan></text>
+
+    <text x="0" y="176" fill="#8590a6"># TYPE macro_alerts_pending gauge</text>
+    <text x="0" y="194" fill="#e6e9ef">macro_alerts_pending <tspan fill="#7ecbff">5</tspan></text>
+
+    <text x="0" y="220" fill="#8590a6"># TYPE macro_alerts_sent_total counter</text>
+    <text x="0" y="238" fill="#e6e9ef">macro_alerts_sent_total <tspan fill="#5bd99a">28</tspan></text>
+
+    <text x="0" y="264" fill="#8590a6"># TYPE macro_scan_requests_total counter</text>
+    <text x="0" y="282" fill="#e6e9ef">macro_scan_requests_total <tspan fill="#5bd99a">142</tspan></text>
+  </g>
+</svg>

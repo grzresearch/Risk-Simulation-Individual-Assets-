@@ -1,0 +1,187 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <style>
+      .bg { fill:#0e1015; }
+      .panel { fill:#1a1f2c; stroke:#2a2f3a; }
+      .title { fill:#e6e9ef; font-size:18px; font-weight:700; }
+      .sub { fill:#8590a6; font-size:11px; }
+      .label { fill:#e6e9ef; font-size:12px; }
+      .h2 { fill:#a4b0c2; font-size:13px; font-weight:600; }
+      .th { fill:#9fb0c8; font-size:10px; font-weight:600; }
+      .td { fill:#e6e9ef; font-size:10px; }
+      .pos { fill:#5bd99a; }
+      .neg { fill:#ff7a8a; }
+      .chip { fill:#2a2f3a; }
+      .chip-text { fill:#9fb0c8; font-size:9px; }
+      .browser { fill:#080a0e; stroke:#222836; }
+      .crumb { fill:#e6e9ef; font-size:11px; font-family:monospace; }
+    </style>
+  </defs>
+  <rect width="960" height="600" class="bg"/>
+
+  <!-- Browser chrome -->
+  <rect x="20" y="20" width="920" height="560" rx="8" class="browser"/>
+  <circle cx="38" cy="38" r="5" fill="#ff5f57"/>
+  <circle cx="54" cy="38" r="5" fill="#ffbd2e"/>
+  <circle cx="70" cy="38" r="5" fill="#28c840"/>
+  <rect x="100" y="28" width="820" height="22" rx="4" fill="#1a1f2c"/>
+  <text x="120" y="44" class="crumb">https://risk.internal/runs/20260514T100000Z/report.html</text>
+
+  <!-- Header -->
+  <text x="40" y="80"  class="title">macro_risk &#8212; direction &amp; risk forecast</text>
+  <text x="40" y="98"  class="sub">run 2026-05-14 &#183; macro_risk 0.2.0 (e051583, May 14 2026)</text>
+
+  <!-- Asset section: SPY -->
+  <text x="40" y="124" class="h2">SPY &#8212; SPDR S&amp;P 500 ETF</text>
+  <rect x="120" y="113" width="46" height="14" rx="7" class="chip"/>
+  <text x="143" y="123" text-anchor="middle" class="chip-text">etf</text>
+  <text x="40" y="142" class="sub">spot 528.41    hist vol 14.32%    GARCH vol 18.71%</text>
+
+  <!-- Table SPY -->
+  <rect x="40" y="152" width="880" height="120" rx="6" class="panel"/>
+  <g font-size="10">
+    <text x="50"  y="170" class="th">Date</text>
+    <text x="135" y="170" class="th">Event</text>
+    <text x="245" y="170" class="th">Regime</text>
+    <text x="320" y="170" class="th">P&#8593;</text>
+    <text x="370" y="170" class="th">P&#8593; (w)</text>
+    <text x="430" y="170" class="th">P&#8593; (R)</text>
+    <text x="490" y="170" class="th">Mean</text>
+    <text x="550" y="170" class="th">95% CI low</text>
+    <text x="640" y="170" class="th">95% CI high</text>
+    <text x="730" y="170" class="th">VaR95</text>
+    <text x="780" y="170" class="th">BH-q</text>
+    <text x="830" y="170" class="th">n</text>
+    <text x="870" y="170" class="th">MC p50</text>
+
+    <text x="50"  y="190" class="td">2026-05-15</text>
+    <text x="135" y="190" class="td">CPI</text>
+    <rect x="240" y="180" width="50" height="14" rx="7" class="chip"/>
+    <text x="265" y="190" text-anchor="middle" class="chip-text">Hiking</text>
+    <text x="320" y="190" class="td">64%</text>
+    <text x="370" y="190" class="td">70%</text>
+    <text x="430" y="190" class="td">74%</text>
+    <text x="490" y="190" class="pos">+0.42%</text>
+    <text x="550" y="190" class="td">-2.81%</text>
+    <text x="640" y="190" class="td">+3.07%</text>
+    <text x="730" y="190" class="td">2.65%</text>
+    <text x="780" y="190" class="pos">0.024</text>
+    <text x="830" y="190" class="td">73</text>
+    <text x="870" y="190" class="td">529.07</text>
+
+    <text x="50"  y="210" class="td">2026-05-30</text>
+    <text x="135" y="210" class="td">Core PCE</text>
+    <rect x="240" y="200" width="50" height="14" rx="7" class="chip"/>
+    <text x="265" y="210" text-anchor="middle" class="chip-text">Hiking</text>
+    <text x="320" y="210" class="td">54%</text>
+    <text x="370" y="210" class="td">51%</text>
+    <text x="430" y="210" class="td">54%</text>
+    <text x="490" y="210" class="pos">+0.18%</text>
+    <text x="550" y="210" class="td">-2.42%</text>
+    <text x="640" y="210" class="td">+2.78%</text>
+    <text x="730" y="210" class="td">2.42%</text>
+    <text x="780" y="210" class="td">0.31</text>
+    <text x="830" y="210" class="td">68</text>
+    <text x="870" y="210" class="td">528.85</text>
+
+    <text x="50"  y="230" class="td">2026-06-06</text>
+    <text x="135" y="230" class="td">NFP</text>
+    <rect x="240" y="220" width="50" height="14" rx="7" class="chip"/>
+    <text x="265" y="230" text-anchor="middle" class="chip-text">Hiking</text>
+    <text x="320" y="230" class="td">52%</text>
+    <text x="370" y="230" class="td">48%</text>
+    <text x="430" y="230" class="td">46%</text>
+    <text x="490" y="230" class="neg">-0.05%</text>
+    <text x="550" y="230" class="td">-3.18%</text>
+    <text x="640" y="230" class="td">+3.20%</text>
+    <text x="730" y="230" class="td">3.04%</text>
+    <text x="780" y="230" class="td">0.42</text>
+    <text x="830" y="230" class="td">71</text>
+    <text x="870" y="230" class="td">528.21</text>
+
+    <text x="50"  y="250" class="td">2026-06-18</text>
+    <text x="135" y="250" class="td">FOMC</text>
+    <rect x="240" y="240" width="50" height="14" rx="7" class="chip"/>
+    <text x="265" y="250" text-anchor="middle" class="chip-text">Hiking</text>
+    <text x="320" y="250" class="td">47%</text>
+    <text x="370" y="250" class="td">42%</text>
+    <text x="430" y="250" class="td">38%</text>
+    <text x="490" y="250" class="neg">-0.18%</text>
+    <text x="550" y="250" class="td">-3.50%</text>
+    <text x="640" y="250" class="td">+2.95%</text>
+    <text x="730" y="250" class="td">3.20%</text>
+    <text x="780" y="250" class="pos">0.038</text>
+    <text x="830" y="250" class="td">68</text>
+    <text x="870" y="250" class="td">527.66</text>
+  </g>
+
+  <!-- Backtest table -->
+  <text x="40" y="298" class="h2">Walk-forward backtest</text>
+  <rect x="40" y="306" width="880" height="80" rx="6" class="panel"/>
+  <g font-size="10">
+    <text x="50"  y="324" class="th">Event</text>
+    <text x="220" y="324" class="th">N</text>
+    <text x="280" y="324" class="th">Brier</text>
+    <text x="360" y="324" class="th">Log-loss</text>
+    <text x="450" y="324" class="th">Hit rate</text>
+    <text x="540" y="324" class="th">PnL</text>
+    <text x="640" y="324" class="th">Sharpe</text>
+    <text x="740" y="324" class="th">Max DD</text>
+
+    <text x="50"  y="344" class="td">CPI</text>
+    <text x="220" y="344" class="td">73</text>
+    <text x="280" y="344" class="td">0.221</text>
+    <text x="360" y="344" class="td">0.642</text>
+    <text x="450" y="344" class="pos">58.3%</text>
+    <text x="540" y="344" class="pos">+28.6%</text>
+    <text x="640" y="344" class="pos">0.74</text>
+    <text x="740" y="344" class="neg">-8.4%</text>
+
+    <text x="50"  y="364" class="td">FOMC</text>
+    <text x="220" y="364" class="td">68</text>
+    <text x="280" y="364" class="td">0.236</text>
+    <text x="360" y="364" class="td">0.668</text>
+    <text x="450" y="364" class="td">52.1%</text>
+    <text x="540" y="364" class="pos">+11.4%</text>
+    <text x="640" y="364" class="td">0.31</text>
+    <text x="740" y="364" class="neg">-12.6%</text>
+  </g>
+
+  <!-- Portfolio panel -->
+  <text x="40" y="412" class="h2">Portfolio risk (1d)</text>
+  <rect x="40" y="420" width="880" height="120" rx="6" class="panel"/>
+  <g font-size="11">
+    <text x="60" y="446" class="sub">Mean</text>
+    <text x="60" y="468" class="label" font-weight="700">+0.04%</text>
+
+    <text x="160" y="446" class="sub">Std dev</text>
+    <text x="160" y="468" class="label" font-weight="700">0.92%</text>
+
+    <text x="260" y="446" class="sub">VaR 95</text>
+    <text x="260" y="468" class="neg" font-weight="700">1.42%</text>
+
+    <text x="360" y="446" class="sub">VaR 99</text>
+    <text x="360" y="468" class="neg" font-weight="700">2.18%</text>
+
+    <text x="460" y="446" class="sub">ES 95</text>
+    <text x="460" y="468" class="neg" font-weight="700">1.93%</text>
+
+    <text x="560" y="446" class="sub">ES 99</text>
+    <text x="560" y="468" class="neg" font-weight="700">2.86%</text>
+
+    <text x="660" y="446" class="sub">Top contributor</text>
+    <text x="660" y="468" class="label" font-weight="700">SPY (58%)</text>
+
+    <text x="60" y="500" class="sub">Component-VaR contribution</text>
+    <rect x="60"  y="510" width="280" height="14" fill="#ff7a8a"/>
+    <text x="346" y="522" class="td">SPY 0.83%</text>
+    <rect x="60"  y="528" width="71"  height="6" fill="#ff7a8a"/>
+    <text x="138" y="534" class="td">TLT 0.21%</text>
+    <rect x="200" y="528" width="60" height="6" fill="#ff7a8a"/>
+    <text x="266" y="534" class="td">USO 0.18%</text>
+    <rect x="330" y="528" width="27" height="6" fill="#ff7a8a"/>
+    <text x="362" y="534" class="td">BTC 0.08%</text>
+  </g>
+
+  <text x="40" y="568" class="sub">JSON / CSV / Slack alerts and Markdown model card are produced from the same scan.</text>
+</svg>

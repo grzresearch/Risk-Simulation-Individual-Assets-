@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <style>
+      .bg { fill:#0e1015; }
+      .title { fill:#e6e9ef; font-size:18px; font-weight:700; }
+      .sub { fill:#8590a6; font-size:12px; }
+      .axis { stroke:#3a4150; stroke-width:1; }
+      .grid { stroke:#1c2230; stroke-width:1; }
+      .axislabel { fill:#8590a6; font-size:10px; }
+      .ann { fill:#e6e9ef; font-size:11px; }
+    </style>
+  </defs>
+  <rect width="960" height="480" class="bg"/>
+  <text x="20" y="32" class="title">Stress replays &#8212; SPY drawdown across 9 historical macro shocks</text>
+  <text x="20" y="52" class="sub">price level normalised to 100 at scenario start  &#183;  the engine ships these as a built-in library</text>
+
+  <!-- chart 60-940, y 80-380 -->
+  <g>
+    <line x1="60"  y1="380" x2="940" y2="380" class="axis"/>
+    <line x1="60"  y1="80"  x2="60"  y2="380" class="axis"/>
+    <line x1="60"  y1="320" x2="940" y2="320" class="grid"/>
+    <line x1="60"  y1="260" x2="940" y2="260" class="grid"/>
+    <line x1="60"  y1="200" x2="940" y2="200" class="grid"/>
+    <line x1="60"  y1="140" x2="940" y2="140" class="grid"/>
+
+    <!-- 100 baseline -->
+    <line x1="60" y1="200" x2="940" y2="200" stroke="#5b6478" stroke-width="0.6" stroke-dasharray="3 3"/>
+
+    <text x="56" y="384" text-anchor="end" class="axislabel">60</text>
+    <text x="56" y="324" text-anchor="end" class="axislabel">75</text>
+    <text x="56" y="264" text-anchor="end" class="axislabel">90</text>
+    <text x="56" y="204" text-anchor="end" class="axislabel">100</text>
+    <text x="56" y="144" text-anchor="end" class="axislabel">110</text>
+    <text x="56" y="84"  text-anchor="end" class="axislabel">120</text>
+
+    <text x="60" y="400" text-anchor="middle" class="axislabel">D0</text>
+    <text x="940" y="400" text-anchor="middle" class="axislabel">end of window</text>
+
+    <!-- GFC -45% -->
+    <polyline fill="none" stroke="#ff7a8a" stroke-width="2"
+      points="60,200 130,212 200,232 270,256 340,280 410,308 480,332 550,348 620,344 690,340 760,332 830,326 940,322"/>
+    <text x="940" y="318" text-anchor="end" class="ann" fill="#ff7a8a">GFC -42%</text>
+
+    <!-- Covid V -->
+    <polyline fill="none" stroke="#f5a26d" stroke-width="2"
+      points="60,200 100,210 140,232 180,272 220,310 260,332 300,318 340,296 380,272 420,250 460,232 500,218 540,210 580,204 620,200 660,196 700,194 740,194 780,192 820,192 860,194 900,194 940,194"/>
+    <text x="940" y="186" text-anchor="end" class="ann" fill="#f5a26d">Covid V-shape</text>
+
+    <!-- 2022 CPI shock -->
+    <polyline fill="none" stroke="#c97777" stroke-width="2"
+      points="60,200 110,206 160,212 210,222 260,232 310,244 360,256 410,266 460,272 510,278 560,282 610,278 660,272 710,266 760,260 810,254 860,250 940,244"/>
+    <text x="940" y="240" text-anchor="end" class="ann" fill="#c97777">2022 CPI -19%</text>
+
+    <!-- Q4 2018 -->
+    <polyline fill="none" stroke="#a06fb5" stroke-width="2"
+      points="60,200 110,202 160,206 210,214 260,222 310,234 360,244 410,250 460,250 510,242 560,232 610,222 660,214 710,208 760,206 810,204 860,202 940,200"/>
+    <text x="940" y="196" text-anchor="end" class="ann" fill="#a06fb5">Q4-18 -19%</text>
+
+    <!-- Volmageddon Feb 18 -->
+    <polyline fill="none" stroke="#6aa3ff" stroke-width="2"
+      points="60,200 80,210 100,228 120,246 140,256 160,256 180,250 200,242 220,232 240,224 260,218 280,212 300,208 320,206 340,204 360,202 380,200 400,200 420,200 440,200 940,200"/>
+    <text x="940" y="208" text-anchor="end" class="ann" fill="#6aa3ff">Volmageddon</text>
+
+    <!-- SVB -->
+    <polyline fill="none" stroke="#5bd99a" stroke-width="2"
+      points="60,200 80,206 100,214 120,224 140,232 160,234 180,232 200,228 220,222 240,216 260,212 280,208 300,206 320,204 340,202 360,200 380,200 940,196"/>
+    <text x="940" y="192" text-anchor="end" class="ann" fill="#5bd99a">SVB / regional bk</text>
+  </g>
+
+  <text x="20" y="450" class="sub">For each asset the engine reports total log return, max drawdown and duration per scenario.</text>
+  <text x="20" y="468" class="sub">A name that didn't trade in a window is silently skipped (no synthetic shocks are applied).</text>
+</svg>

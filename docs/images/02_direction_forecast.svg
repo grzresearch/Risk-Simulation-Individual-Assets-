@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif">
+  <defs>
+    <style>
+      .bg { fill:#0e1015; }
+      .title { fill:#e6e9ef; font-size:18px; font-weight:700; }
+      .sub { fill:#8590a6; font-size:12px; }
+      .label { fill:#e6e9ef; font-size:12px; }
+      .row { fill:#1a1f2c; }
+      .grid { stroke:#222836; stroke-width:1; }
+      .pos { fill:#5bd99a; }
+      .neg { fill:#ff7a8a; }
+      .neutral { fill:#6aa3ff; }
+      .pct { fill:#e6e9ef; font-size:11px; font-weight:600; }
+      .chip { fill:#2a2f3a; }
+      .chip-text { fill:#9fb0c8; font-size:10px; }
+    </style>
+  </defs>
+  <rect width="960" height="480" class="bg"/>
+  <text x="20" y="32" class="title">Direction forecast &#8212; per (asset &#215; upcoming event)</text>
+  <text x="20" y="52" class="sub">posterior P(up): empirical (blue) &#183; EWMA-weighted (cyan) &#183; regime-conditional (orange) &#183; 95% CI bar</text>
+
+  <!-- header -->
+  <g transform="translate(20,80)">
+    <text x="0"   y="0" class="sub">Asset / Event</text>
+    <text x="180" y="0" class="sub">Date</text>
+    <text x="260" y="0" class="sub">Regime</text>
+    <text x="370" y="0" class="sub">P(up) bar</text>
+    <text x="660" y="0" class="sub">Mean ret</text>
+    <text x="750" y="0" class="sub">95% CI</text>
+    <text x="880" y="0" class="sub">BH-q</text>
+  </g>
+
+  <!-- ROWS -->
+  <g font-family="system-ui">
+    <!-- row template -->
+    <!-- Row 1: SPY CPI -->
+    <rect x="20" y="92" width="920" height="42" rx="4" class="row"/>
+    <text x="30"  y="118" class="label">SPY &#8212; CPI</text>
+    <text x="200" y="118" class="label">2026-05-15</text>
+    <rect x="260" y="106" width="80" height="20" rx="10" class="chip"/>
+    <text x="300" y="120" text-anchor="middle" class="chip-text">Hiking</text>
+    <!-- prob bars (3 bars stacked) -->
+    <rect x="370" y="100" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="100" width="178" height="6" class="neutral"/>
+    <text x="660" y="106" class="pct">P=64%</text>
+    <rect x="370" y="112" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="112" width="195" height="6" fill="#7ecbff"/>
+    <text x="660" y="118" class="pct">EWMA=70%</text>
+    <rect x="370" y="124" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="124" width="206" height="6" fill="#f5a26d"/>
+    <text x="660" y="130" class="pct">Regime=74%</text>
+    <text x="750" y="118" class="label">[-2.8%, +3.0%]</text>
+    <text x="880" y="118" class="pos">0.024</text>
+
+    <!-- Row 2: TLT FOMC -->
+    <rect x="20" y="142" width="920" height="42" rx="4" class="row"/>
+    <text x="30"  y="168" class="label">TLT &#8212; FOMC</text>
+    <text x="200" y="168" class="label">2026-06-18</text>
+    <rect x="260" y="156" width="80" height="20" rx="10" class="chip"/>
+    <text x="300" y="170" text-anchor="middle" class="chip-text">Hiking</text>
+    <rect x="370" y="150" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="150" width="92" height="6" class="neutral"/>
+    <text x="660" y="156" class="pct">P=33%</text>
+    <rect x="370" y="162" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="162" width="78" height="6" fill="#7ecbff"/>
+    <text x="660" y="168" class="pct">EWMA=28%</text>
+    <rect x="370" y="174" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="174" width="64" height="6" fill="#f5a26d"/>
+    <text x="660" y="180" class="pct">Regime=23%</text>
+    <text x="750" y="168" class="label">[-2.1%, +1.4%]</text>
+    <text x="880" y="168" class="pos">0.041</text>
+
+    <!-- Row 3: BTC NFP -->
+    <rect x="20" y="192" width="920" height="42" rx="4" class="row"/>
+    <text x="30"  y="218" class="label">BTC &#8212; NFP</text>
+    <text x="200" y="218" class="label">2026-06-06</text>
+    <rect x="260" y="206" width="80" height="20" rx="10" class="chip"/>
+    <text x="300" y="220" text-anchor="middle" class="chip-text">Risk-Off</text>
+    <rect x="370" y="200" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="200" width="151" height="6" class="neutral"/>
+    <text x="660" y="206" class="pct">P=54%</text>
+    <rect x="370" y="212" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="212" width="148" height="6" fill="#7ecbff"/>
+    <text x="660" y="218" class="pct">EWMA=53%</text>
+    <rect x="370" y="224" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="224" width="118" height="6" fill="#f5a26d"/>
+    <text x="660" y="230" class="pct">Regime=42%</text>
+    <text x="750" y="218" class="label">[-9.4%, +8.1%]</text>
+    <text x="880" y="218" class="sub">0.62</text>
+
+    <!-- Row 4: GLD CPI -->
+    <rect x="20" y="242" width="920" height="42" rx="4" class="row"/>
+    <text x="30"  y="268" class="label">GLD &#8212; CPI</text>
+    <text x="200" y="268" class="label">2026-05-15</text>
+    <rect x="260" y="256" width="80" height="20" rx="10" class="chip"/>
+    <text x="300" y="270" text-anchor="middle" class="chip-text">Hiking</text>
+    <rect x="370" y="250" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="250" width="173" height="6" class="neutral"/>
+    <text x="660" y="256" class="pct">P=62%</text>
+    <rect x="370" y="262" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="262" width="187" height="6" fill="#7ecbff"/>
+    <text x="660" y="268" class="pct">EWMA=67%</text>
+    <rect x="370" y="274" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="274" width="201" height="6" fill="#f5a26d"/>
+    <text x="660" y="280" class="pct">Regime=72%</text>
+    <text x="750" y="268" class="label">[-1.6%, +2.3%]</text>
+    <text x="880" y="268" class="pos">0.018</text>
+
+    <!-- Row 5: QQQ PCE -->
+    <rect x="20" y="292" width="920" height="42" rx="4" class="row"/>
+    <text x="30"  y="318" class="label">QQQ &#8212; Core PCE</text>
+    <text x="200" y="318" class="label">2026-05-30</text>
+    <rect x="260" y="306" width="80" height="20" rx="10" class="chip"/>
+    <text x="300" y="320" text-anchor="middle" class="chip-text">Hiking</text>
+    <rect x="370" y="300" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="300" width="151" height="6" class="neutral"/>
+    <text x="660" y="306" class="pct">P=54%</text>
+    <rect x="370" y="312" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="312" width="142" height="6" fill="#7ecbff"/>
+    <text x="660" y="318" class="pct">EWMA=51%</text>
+    <rect x="370" y="324" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="324" width="151" height="6" fill="#f5a26d"/>
+    <text x="660" y="330" class="pct">Regime=54%</text>
+    <text x="750" y="318" class="label">[-2.4%, +2.8%]</text>
+    <text x="880" y="318" class="sub">0.31</text>
+
+    <!-- Row 6: USO FOMC -->
+    <rect x="20" y="342" width="920" height="42" rx="4" class="row"/>
+    <text x="30"  y="368" class="label">USO &#8212; FOMC</text>
+    <text x="200" y="368" class="label">2026-06-18</text>
+    <rect x="260" y="356" width="80" height="20" rx="10" class="chip"/>
+    <text x="300" y="370" text-anchor="middle" class="chip-text">Hiking</text>
+    <rect x="370" y="350" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="350" width="123" height="6" class="neutral"/>
+    <text x="660" y="356" class="pct">P=44%</text>
+    <rect x="370" y="362" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="362" width="109" height="6" fill="#7ecbff"/>
+    <text x="660" y="368" class="pct">EWMA=39%</text>
+    <rect x="370" y="374" width="280" height="6" fill="#222836"/>
+    <rect x="370" y="374" width="98" height="6" fill="#f5a26d"/>
+    <text x="660" y="380" class="pct">Regime=35%</text>
+    <text x="750" y="368" class="label">[-3.5%, +3.1%]</text>
+    <text x="880" y="368" class="sub">0.18</text>
+  </g>
+
+  <!-- legend -->
+  <g transform="translate(20,420)">
+    <rect x="0"   y="0" width="14" height="6" class="neutral"/>
+    <text x="20"  y="6" class="sub">empirical posterior</text>
+    <rect x="160" y="0" width="14" height="6" fill="#7ecbff"/>
+    <text x="180" y="6" class="sub">EWMA-weighted (recent first)</text>
+    <rect x="370" y="0" width="14" height="6" fill="#f5a26d"/>
+    <text x="390" y="6" class="sub">regime-conditional sub-sample</text>
+    <text x="600" y="6" class="sub">BH-q in green &lt; 0.05 (FDR-significant)</text>
+  </g>
+</svg>
