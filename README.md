@@ -1,70 +1,125 @@
-# macro_risk — Live Macro Driven Risk & Direction Engine
+# macro_risk: Live Macro-Driven Risk and Direction Engine
 
-C++17 production-grade engine that fetches **live macro data** (CPI, PPI,
-Core PCE, NFP, FOMC, Unemployment, GDP, Retail Sales, ISM, UMich) and
-produces direction probabilities, confidence intervals, VaR/ES, GARCH vol,
-walk-forward backtests, multi-asset portfolio risk and stress replays for
-every user-configured asset (equity / ETF / bond / crypto / commodity / FX).
+![C++17](https://img.shields.io/badge/C%2B%2B-17-blue)
+![CMake](https://img.shields.io/badge/CMake-%E2%89%A53.16-informational)
 
-Ships as a CLI, a REST/Prometheus server, and a Docker container; persists
-runs to JSON files or Postgres; alerts to Slack; exports text / JSON / CSV /
-HTML / model-card.
+`macro_risk` is a production-grade C++17 engine that fetches **live macro
+data** (CPI, PPI, Core PCE, NFP, FOMC, Unemployment, GDP, Retail Sales, ISM,
+UMich) and produces direction probabilities, confidence intervals, VaR/ES,
+GARCH volatility, walk-forward backtests, multi-asset portfolio risk and
+stress replays for every user-configured asset (equity, ETF, bond, crypto,
+commodity, FX). It ships as a CLI, a REST/Prometheus server and a Docker
+container; persists runs to JSON files or Postgres; alerts to Slack; and
+exports text, JSON, CSV, HTML and a model card.
 
 ![Architecture](docs/images/01_architecture.svg)
 
----
+## Contents
 
-## Visual tour of every module
+- [Features](#features)
+- [Visual tour](#visual-tour)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [REST API](#rest-api)
+- [Persistence](#persistence)
+- [Alerts](#alerts)
+- [Governance](#governance)
+- [Project structure](#project-structure)
+- [License](#license)
+
+## Features
+
+### Analytics
+
+- Empirical, EWMA-weighted and regime-conditional Bayesian P(up)
+- 68% / 95% empirical confidence intervals, historical VaR, Expected Shortfall
+- GARCH(1,1) MLE volatility forecast per asset
+- Walk-forward backtest (Brier, log-loss, hit rate, Sharpe, Sortino, max-DD)
+- Multi-asset portfolio Cholesky Monte Carlo and finite-difference
+  component VaR
+- Nine historical stress replays (GFC, Euro, Taper, Volmageddon, Covid,
+  2022 CPI, SVB, ...)
+- Bonferroni and Benjamini-Hochberg FDR correction across the full grid
+- Rule-based macro regime detector (Easing / Hiking / Stagflation / Risk-Off)
+- Standardised release surprise (z-score) from a pluggable consensus feed
+- OpenMP-parallel Monte Carlo (auto-detected at build time)
+
+### Production
+
+- REST API (`/healthz`, `/version`, `/metrics`, `/scan`, `/runs`, `/runs/{id}`)
+- Optional bearer-token authentication
+- Prometheus text-format `/metrics` endpoint with built-in counters and gauges
+- Persistent run storage: JSON files or Postgres (libpq, optional at build
+  time)
+- Append-only audit log (JSON lines, SIEM friendly)
+- Structured JSON logger for cloud-native log shippers
+- Thread-pool primitive for parallel data fetching
+- Git SHA, semantic version and build date baked into the binary
+
+### Reporting
+
+- Console table, JSON, long-form CSV, standalone HTML, Markdown model card
+- Slack webhook alerts gated by P(up) and BH-q thresholds
+
+### Governance
+
+- SR 11-7 aligned model card generator
+- RBAC role/permission API (viewer / analyst / admin)
+- Versioned, reproducible run IDs
+- Audit trail with actor, action and fields
+
+## Visual tour
 
 > All visualisations below are **mockups** that mirror the actual outputs the
 > engine produces. They show what each module returns; rendering uses the
 > same dark palette as the standalone HTML report.
 
-### 1. Direction forecast — empirical · EWMA-weighted · regime-conditional
+### 1. Direction forecast: empirical, EWMA-weighted, regime-conditional
 
-For every (asset × upcoming event) the engine emits three posterior
+For every (asset x upcoming event) pair the engine emits three posterior
 probabilities of "up" along with the empirical 95% CI and the BH-q
 multiple-testing-adjusted significance.
 
 ![Direction forecast](docs/images/02_direction_forecast.svg)
 
-### 2. Monte-Carlo terminal-price fan
+### 2. Monte Carlo terminal-price fan
 
-Day-1 shock drawn from the event-conditional empirical return distribution,
-days 2..N drift sampled from the unconditional baseline. 20 000 paths,
-parallelised with OpenMP.
+The day-1 shock is drawn from the event-conditional empirical return
+distribution; the drift for days 2..N is sampled from the unconditional
+baseline. 20 000 paths, parallelised with OpenMP.
 
 ![Monte Carlo fan](docs/images/03_monte_carlo_fan.svg)
 
 ### 3. GARCH(1,1) conditional volatility
 
 MLE fitted via Nelder-Mead with feasibility penalties; falls back to
-RiskMetrics (λ=0.94) on convergence failure. The 1-step-ahead σ is reported
-per asset and feeds the per-event risk band.
+RiskMetrics (λ = 0.94) on convergence failure. The 1-step-ahead σ is
+reported per asset and feeds the per-event risk band.
 
 ![GARCH](docs/images/04_garch_volatility.svg)
 
 ### 4. Macro regime timeline
 
 Rule-based classifier driven by CPI YoY, Fed Funds, Unemployment, VIX and
-SPY 3-month drawdown. Used to carve out a regime-conditional sub-sample of
-historical event reactions.
+the SPY 3-month drawdown. Used to carve out a regime-conditional sub-sample
+of historical event reactions.
 
 ![Regime](docs/images/05_regime_timeline.svg)
 
-### 5. Multiple-testing correction (Bonferroni & BH-FDR)
+### 5. Multiple-testing correction (Bonferroni and BH-FDR)
 
-When you screen 13 assets × 8 event kinds you get 100+ p-values: most
-"signals" you'd accept at α=0.05 are pure noise. The engine adjusts every
-sign-test p across the full grid.
+Screening 13 assets x 8 event kinds yields 100+ p-values, and most
+"signals" accepted at α = 0.05 are pure noise. The engine adjusts every
+sign-test p-value across the full grid.
 
 ![FDR](docs/images/06_fdr_correction.svg)
 
 ### 6. Calibration / reliability diagram
 
-Walk-forward forecasts are scored against realised outcomes via Brier-score,
-log-loss and a reliability diagram. The same loop emits the directional
-PnL Sharpe / Sortino / max-DD.
+Walk-forward forecasts are scored against realised outcomes via Brier
+score, log-loss and a reliability diagram. The same loop emits the
+directional PnL Sharpe, Sortino and max-DD.
 
 ![Calibration](docs/images/07_calibration.svg)
 
@@ -75,91 +130,62 @@ in both the posterior P(up) and the weighted mean / weighted quantile.
 
 ![EWMA weights](docs/images/08_ewma_weights.svg)
 
-### 8. Portfolio risk — VaR/CVaR + component-VaR + correlation
+### 8. Portfolio risk: VaR/CVaR, component VaR and correlation
 
-Empirical covariance → Cholesky → multi-asset Monte-Carlo → portfolio
-P&L distribution. Component-VaR via finite-difference per holding.
+Empirical covariance, Cholesky factorisation, multi-asset Monte Carlo and
+the resulting portfolio P&L distribution. Component VaR is computed by
+finite differences per holding.
 
 ![Portfolio risk](docs/images/09_portfolio_risk.svg)
 
 ### 9. Historical stress replays
 
-Library of nine canonical macro stress windows (GFC, Euro, Taper, Volmageddon,
-Q4-2018, Covid, 2022 CPI shock, SVB, China devaluation). Each asset's own
-price path is replayed through each window — no synthetic shocks.
+A library of nine canonical macro stress windows (GFC, Euro, Taper,
+Volmageddon, Q4 2018, Covid, 2022 CPI shock, SVB, China devaluation). Each
+asset's own price path is replayed through each window; no synthetic shocks
+are used.
 
 ![Stress replays](docs/images/10_stress_replays.svg)
 
 ### 10. Walk-forward backtest PnL
 
-For each historical event, build the forecast using only data strictly
-before it; size = `|P(up) - 0.5| · 2`, sign = direction. Aggregates to a
-cumulative PnL curve with max-DD shading.
+For each historical event the forecast is built using only data strictly
+before it; size = `|P(up) - 0.5| · 2`, sign = direction. The results
+aggregate to a cumulative PnL curve with max-DD shading.
 
 ![Backtest PnL](docs/images/11_backtest_pnl.svg)
 
 ### 11. Standalone HTML report
 
 `--html report.html` renders the full ScanOutput as a self-contained dark
-HTML page with no external assets. Good for pinning to Confluence / SharePoint
-or e-mailing.
+HTML page with no external assets, suitable for pinning to Confluence or
+SharePoint or for sending by e-mail.
 
 ![HTML dashboard](docs/images/12_html_dashboard.svg)
 
-### 12. REST API + Prometheus metrics
+### 12. REST API and Prometheus metrics
 
 `--serve` launches a cpp-httplib server with `/healthz`, `/version`,
-`/metrics`, `/runs`, `/runs/{id}`, `/scan`. Optional bearer-token auth.
+`/metrics`, `/runs`, `/runs/{id}` and `/scan`. Bearer-token authentication
+is optional.
 
 ![REST + metrics](docs/images/13_rest_metrics.svg)
 
-### 13. Governance — audit, RBAC, model card
+### 13. Governance: audit, RBAC, model card
 
 Append-only JSON-lines audit log, RBAC defaults (viewer / analyst / admin)
-and an SR 11-7-aligned Markdown model card generated alongside every run.
+and an SR 11-7 aligned Markdown model card generated alongside every run.
 
 ![Governance](docs/images/14_governance.svg)
 
----
+## Installation
 
-## Features at a glance
+### Build from source
 
-### Analytics
-- Empirical, EWMA-weighted, and regime-conditional Bayesian P(up)
-- 68% / 95% empirical confidence intervals, historical VaR, Expected Shortfall
-- GARCH(1,1) MLE volatility forecast per asset
-- Walk-forward backtest (Brier, log-loss, hit-rate, Sharpe, Sortino, max-DD)
-- Multi-asset portfolio Cholesky Monte-Carlo + finite-difference component VaR
-- Nine historical stress replays (GFC, Euro, Taper, Volmageddon, Covid,
-  2022-CPI, SVB, ...)
-- Bonferroni and Benjamini-Hochberg FDR correction across the full grid
-- Rule-based macro regime detector (Easing / Hiking / Stagflation / Risk-Off)
-- Standardised release surprise (z-score) from pluggable consensus feed
-- OpenMP-parallel Monte-Carlo (auto-detected at build time)
-
-### Production
-- REST API (`/healthz`, `/version`, `/metrics`, `/scan`, `/runs`, `/runs/{id}`)
-- Bearer-token authentication (optional)
-- Prometheus text-format `/metrics` endpoint with built-in counters / gauges
-- Persistent run storage: JSON files or Postgres (libpq, optional at build time)
-- Append-only audit log (JSON-lines, SIEM friendly)
-- Structured JSON logger for cloud-native log shippers
-- Thread-pool primitive for parallel data fetching
-- Git SHA + semver + build-date baked into the binary
-
-### Reporting
-- Console table, JSON, long-form CSV, standalone HTML, Markdown model card
-- Slack webhook alerts gated by P(up) and BH-q thresholds
-
-### Governance
-- SR 11-7 aligned model card generator
-- RBAC role/permission API (viewer / analyst / admin)
-- Versioned, reproducible run-ids
-- Audit trail with actor / action / fields
-
----
-
-## Build
+Requirements: a C++17 compiler, CMake 3.16 or newer and libcurl. libpq,
+OpenMP and nlohmann/json are optional: nlohmann/json and cpp-httplib are
+downloaded at configure time when they are not installed (network access
+required).
 
 ```bash
 sudo apt-get install -y cmake build-essential libcurl4-openssl-dev libpq-dev
@@ -168,73 +194,79 @@ cmake --build build -j
 ctest --test-dir build --output-on-failure
 ```
 
-If `libpq` is missing the Postgres backend is skipped at configure time and
-the JSON store is used. If OpenMP is missing the Monte-Carlo loops run
+If `libpq` is missing, the Postgres backend is skipped at configure time and
+the JSON store is used. If OpenMP is missing, the Monte Carlo loops run
 serially. Both adjustments are logged at CMake configure time.
 
-## Docker
+### Docker
 
 ```bash
-docker compose up --build              # macro_risk + Postgres
-docker compose --profile observability up   # adds Prometheus on :9090
+docker compose up --build                    # macro_risk + Postgres
+docker compose --profile observability up    # adds Prometheus on :9090
 ```
 
 The default compose stack mounts `config.example.json` and exposes the
 REST/Prometheus endpoints on `:8080`.
 
----
-
-## CLI
+## Usage
 
 ```bash
-./build/macro_risk --init my_config.json          # write skeleton
+./build/macro_risk --init my_config.json          # write a skeleton config
 ./build/macro_risk --config my_config.json        # text report
 ./build/macro_risk --config my_config.json --json
 ./build/macro_risk --config my_config.json --csv  out.csv
 ./build/macro_risk --config my_config.json --html out.html
 ./build/macro_risk --config my_config.json --model-card MODEL_CARD.md
 ./build/macro_risk --config my_config.json --persist --alert
-./build/macro_risk --config my_config.json --serve     # REST server
+./build/macro_risk --config my_config.json --serve    # REST server
+./build/macro_risk --config my_config.json --debug    # verbose logging
 ./build/macro_risk --version
 ```
 
-Environment overrides:
-- `FRED_API_KEY`   – overrides `api_keys.fred`
-- `SLACK_WEBHOOK`  – overrides `alerts.slack_webhook`
-- `POSTGRES_DSN`   – overrides `persistence.postgres_dsn`
+Running `./build/macro_risk` without arguments prints the full usage text.
 
----
+Environment overrides:
+
+| Variable        | Overrides                     |
+|-----------------|-------------------------------|
+| `FRED_API_KEY`  | `api_keys.fred`               |
+| `SLACK_WEBHOOK` | `alerts.slack_webhook`        |
+| `POSTGRES_DSN`  | `persistence.postgres_dsn`    |
+
+## Configuration
+
+`--init <path>` writes a default configuration; `config.example.json` is a
+complete example with 13 assets (equities, ETFs, bonds, crypto, commodities
+and the US Dollar Index), a sample portfolio and the `server`, `alerts`,
+`persistence` and `audit` sections described below. Replace
+`REPLACE_WITH_FRED_KEY` with a FRED API key or set `FRED_API_KEY`.
 
 ## REST API
 
-| Method | Path             | Description                                     |
-|--------|------------------|-------------------------------------------------|
-| GET    | `/healthz`       | Liveness check with build metadata              |
-| GET    | `/version`       | Engine semver + git SHA + build date            |
-| GET    | `/metrics`       | Prometheus text-format metrics                  |
-| GET    | `/runs`          | List recent persisted run IDs                   |
-| GET    | `/runs/{id}`     | Load full ScanOutput JSON for a run             |
-| POST   | `/scan`          | Trigger a fresh scan, return JSON ScanOutput    |
+| Method | Path         | Description                                  |
+|--------|--------------|----------------------------------------------|
+| GET    | `/healthz`   | Liveness check with build metadata           |
+| GET    | `/version`   | Engine semver + git SHA + build date         |
+| GET    | `/metrics`   | Prometheus text-format metrics               |
+| GET    | `/runs`      | List recent persisted run IDs                |
+| GET    | `/runs/{id}` | Load full ScanOutput JSON for a run          |
+| POST   | `/scan`      | Trigger a fresh scan, return JSON ScanOutput |
 
 All non-health endpoints honour `Authorization: Bearer <api_token>` if
 `server.api_token` is set.
 
----
-
 ## Persistence
 
-The `persistence` config section picks between:
+The `persistence` config section selects the backend:
 
 ```json
 "persistence": {"backend": "json",     "json_dir": ".cache/runs"}
 "persistence": {"backend": "postgres", "postgres_dsn": "host=db user=macro ..."}
 ```
 
-Postgres schema is shipped in `schema/postgres.sql` and applied automatically
-by `docker compose` via `docker-entrypoint-initdb.d`. The store gracefully
-falls back to JSON if `libpq` is unavailable or the connection fails.
-
----
+The Postgres schema is shipped in `schema/postgres.sql` and applied
+automatically by `docker compose` via `docker-entrypoint-initdb.d`. The
+store falls back to JSON if `libpq` is unavailable or the connection fails.
 
 ## Alerts
 
@@ -248,52 +280,53 @@ falls back to JSON if `libpq` is unavailable or the connection fails.
 }
 ```
 
-`--alert` fires for every `(asset, upcoming event)` where the empirical
-posterior P(up) is more than `prob_threshold` away from 50/50 AND the BH-q
-adjusted p-value is below `bh_q_threshold` AND the sample size is at least
-`min_sample_size`. Slack messages are sent via incoming webhook.
-
----
+`--alert` fires for every (asset, upcoming event) pair where the empirical
+posterior P(up) is more than `prob_threshold` away from 50/50 **and** the
+BH-q adjusted p-value is below `bh_q_threshold` **and** the sample size is
+at least `min_sample_size`. Slack messages are sent via incoming webhook.
 
 ## Governance
 
 - `--model-card MODEL_CARD.md` emits a Markdown model card with intended
-  use, inputs, methodology, validation evidence, limitations and
+  use, inputs, methodology, validation evidence, limitations and a
   reproducibility section.
 - The append-only audit log writes one JSON object per action to
   `audit.path`. Recorded actions include `startup`, `scan.completed`,
-  `server.start`, `store.write`, `report.export`, `alert.dispatch`,
+  `server.start`, `store.write`, `report.export`, `alert.dispatch` and
   `model_card.write`.
-- `Rbac` exposes viewer / analyst / admin defaults; map your SSO group
-  claims to those role names in a downstream gateway.
+- `Rbac` exposes viewer / analyst / admin defaults; map SSO group claims to
+  those role names in a downstream gateway.
 
----
-
-## Project layout
+## Project structure
 
 ```
-src/
-  util/          http_client, time, logger, json_logger, thread_pool,
-                 holiday_calendar, version
-  data/          FRED, Yahoo, CoinGecko, econ-calendar, price cache,
-                 consensus provider
-  engine/        historical_analyzer, statistical_engine, monte_carlo,
-                 risk_calculator, surprise, garch, regime, multitest,
-                 calibration, linalg, portfolio_risk, stress, backtest,
-                 scanner
-  persist/       Store interface + json_store + (optional) postgres_store
-  server/        metrics + http_server (cpp-httplib)
-  alerts/        slack_alerter + rules
-  governance/    audit_log + model_card + rbac
-  report/        text + JSON + CSV + HTML reporters
-  main.cpp       CLI
-tests/           statistics + advanced + production tests
-schema/          Postgres schema
-deploy/          Prometheus scrape config
-docs/images/     SVG mockups embedded in this README
-Dockerfile, docker-compose.yml
-.github/workflows/ci.yml
-config.example.json
+.
+├── src/
+│   ├── util/          http_client, time_utils, logger, json_logger,
+│   │                  thread_pool, holiday_calendar, version
+│   ├── data/          FRED, Yahoo, CoinGecko, econ calendar, price cache,
+│   │                  consensus provider
+│   ├── engine/        historical_analyzer, statistical_engine, monte_carlo,
+│   │                  risk_calculator, surprise, garch, regime, multitest,
+│   │                  calibration, linalg, portfolio_risk, stress,
+│   │                  backtest, scanner
+│   ├── persist/       Store interface, json_store, optional postgres_store
+│   ├── server/        metrics, http_server (cpp-httplib)
+│   ├── alerts/        slack_alerter and alert rules
+│   ├── governance/    audit_log, model_card, rbac
+│   ├── report/        text, JSON, CSV and HTML reporters
+│   ├── config.*       configuration loading
+│   ├── models.*       shared data types
+│   └── main.cpp       CLI entry point
+├── tests/             statistics, advanced and production tests
+├── schema/            Postgres schema
+├── deploy/            Prometheus scrape config
+├── docs/images/       SVG mockups embedded in this README
+├── .github/workflows/ci.yml
+├── CMakeLists.txt
+├── Dockerfile
+├── docker-compose.yml
+└── config.example.json
 ```
 
 ## License
